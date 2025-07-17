@@ -1,9 +1,13 @@
 import express from "express";
+import { getAllUsers, getUserByUN } from "../controllers/users";
 
-const userRouter = express.Router();
+const router = express.Router();
 
-userRouter.get("/test", (req, res) => {
+router.get("/test", (req, res) => {
   res.send("testing route....");
 });
 
-export default userRouter;
+router.get("/", getAllUsers);
+router.get("/:search", getUserByUN);
+
+export default router;
