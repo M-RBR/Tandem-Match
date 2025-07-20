@@ -54,7 +54,7 @@ import userRouter from "./routes/users";
 import "dotenv/config";
 import mongoose from "mongoose";
 
-console.log(process.env.MAXIM);
+// console.log(process.env.MAXIM);
 
 const app = express();
 

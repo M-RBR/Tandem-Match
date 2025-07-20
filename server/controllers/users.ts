@@ -41,12 +41,13 @@ export const register = async (req: Request, res: Response) => {
       return res.status(400).json({ error: "user already exists" });
     }
     const encryptedPassword = await encryptPassword(password);
+    console.log(encryptedPassword);
     const newUser = await UserModel.create({
       ...req.body,
-      password: encryptPassword,
+      password: encryptedPassword,
     });
     console.log(newUser);
-    res.status(201).json({ success: true, _id: newUser.id });
+    //  res.status(201).json({ success: true, _id: newUser.id });
     res.status(201).json({
       user: {
         email: newUser.email,
@@ -74,5 +75,3 @@ export const updateUser = async (req: Request, res: Response) => {
     handleError(error, res);
   }
 };
-
-// returns "undefined" in the terminal, why?
