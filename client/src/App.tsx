@@ -1,3 +1,21 @@
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import SignUp from "./pages/SignUp";
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/signup" element={<SignUp />} />
+        {/* More routes below here */}
+      </Routes>
+    </Router>
+  );
+}
+
+export default App;
+
 /*
 
 import { useEffect, useState } from "react";
@@ -87,19 +105,3 @@ function App() {
 export default App;
 
 */
-
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
-
-function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        {/* More routes below here */}
-      </Routes>
-    </Router>
-  );
-}
-
-export default App;
