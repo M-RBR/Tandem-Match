@@ -1,5 +1,5 @@
-import LoginModal from "../components/LoginModal";
 import { useState } from "react";
+import CreateAccountModal from "../components/SignUpModal";
 
 const Home = () => {
   const [showModal, setShowModal] = useState(false);
@@ -19,9 +19,11 @@ const Home = () => {
           onClick={() => setShowModal(true)}
           className="bg-green-400 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full"
         >
-          Login
+          Sign up
         </button>
-        {showModal && <LoginModal onClose={() => setShowModal(false)} />}
+        {showModal && (
+          <CreateAccountModal onClose={() => setShowModal(false)} />
+        )}
       </div>
     </>
   );
