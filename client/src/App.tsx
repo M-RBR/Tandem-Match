@@ -1,15 +1,21 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import CreateProfile from "./pages/CreateProfile";
+import Navbar from "./components/Navbar";
 
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/createprofile" element={<CreateProfile />} />
-        {/* More routes below here */}
-      </Routes>
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+        <main className="flex-grow">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/createprofile" element={<CreateProfile />} />
+            {/* other routes... */}
+          </Routes>
+        </main>
+      </div>
     </Router>
   );
 }
