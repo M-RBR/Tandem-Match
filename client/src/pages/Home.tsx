@@ -1,5 +1,5 @@
 import { useState } from "react";
-import CreateAccountModal from "../components/SignUpModal";
+import AuthModal from "../components/AuthModal";
 
 const Home = () => {
   const [showModal, setShowModal] = useState(false);
@@ -22,7 +22,7 @@ const Home = () => {
           Sign up
         </button>
         {showModal && (
-          <CreateAccountModal onClose={() => setShowModal(false)} />
+          <AuthModal onClose={() => setShowModal(false)} mode="signup" />
         )}
       </div>
     </>

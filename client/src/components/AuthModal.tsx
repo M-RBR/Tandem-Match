@@ -1,13 +1,15 @@
 import { useRef, useState } from "react";
 import { X } from "lucide-react";
 
-type SignUpModalProps = {
+type AuthModalProps = {
   onClose: () => void;
+  mode: "signup" | "login"; // mode prop
 };
 
-function SignUpModal({ onClose }: SignUpModalProps) {
+function AuthModal({ onClose, mode: initialMode }: AuthModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
 
+  const [mode, setMode] = useState<"signup" | "login">(initialMode); // initialMode renames mode prop inside component, only used once tol initialize local state
   const [email, setEmail] = useState<string | null>(null);
   const [password, setPassword] = useState<string | null>(null);
   const [confirmPassword, setConfirmPassword] = useState<string | null>(null);
@@ -22,13 +24,22 @@ function SignUpModal({ onClose }: SignUpModalProps) {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (password !== confirmPassword) {
+    if (mode === "signup" && password !== confirmPassword) {
       setError("Passwords must match.");
       return;
     }
 
-    console.log("Signing up with:", email, password, confirmPassword);
+    console.log(
+      `${mode === "signup" ? "Signing up" : "Logging in"} with:`,
+      email,
+      password
+    );
     onClose();
+  };
+
+  const toggleMode = () => {
+    setMode(mode === "signup" ? "login" : "signup");
+    setError(null);
   };
 
   return (
@@ -51,7 +62,7 @@ function SignUpModal({ onClose }: SignUpModalProps) {
           </button>
 
           <h2 className="text-xl font-bold mb-6 text-green-700 text-center">
-            Sign up
+            {mode === "signup" ? "Sign up" : "Log in"}
           </h2>
 
           <div className="mb-4">
@@ -88,22 +99,24 @@ function SignUpModal({ onClose }: SignUpModalProps) {
             />
           </div>
 
-          <div className="mb-6">
-            <label
-              htmlFor="confirm-password"
-              className="block text-gray-700 text-sm font-bold mb-2"
-            >
-              Confirm Password
-            </label>
-            <input
-              id="confirm-password"
-              type="password"
-              placeholder="******"
-              required
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-green-900 leading-tight focus:outline-none focus:shadow-outline"
-            />
-          </div>
+          {mode === "signup" && (
+            <div className="mb-6">
+              <label
+                htmlFor="confirm-password"
+                className="block text-gray-700 text-sm font-bold mb-2"
+              >
+                Confirm Password
+              </label>
+              <input
+                id="confirm-password"
+                type="password"
+                placeholder="******"
+                required
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-green-900 leading-tight focus:outline-none focus:shadow-outline"
+              />
+            </div>
+          )}
 
           {error && (
             <p className="text-red-500 text-sm mb-4 text-center">{error}</p>
@@ -114,11 +127,24 @@ function SignUpModal({ onClose }: SignUpModalProps) {
               type="submit"
               className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             >
-              Submit
+              {mode === "signup" ? "Sign up" : "Log in"}
             </button>
-            <p className="mt-4 text-xs text-gray-600 text-center">
-              By clicking Submit, you agree to our terms...
-            </p>
+
+            <button
+              type="button"
+              onClick={toggleMode}
+              className="mt-4 text-sm text-green-600 hover:text-green-800"
+            >
+              {mode === "signup"
+                ? "Already have an account? Log in"
+                : "Don't have an account yet? Sign up"}
+            </button>
+
+            {mode === "signup" && (
+              <p className="mt-4 text-xs text-gray-600 text-center font-bold italic">
+                By clicking Sign up, you agree to the processing of your data.
+              </p>
+            )}
           </div>
         </form>
       </div>
@@ -126,4 +152,4 @@ function SignUpModal({ onClose }: SignUpModalProps) {
   );
 }
 
-export default SignUpModal;
+export default AuthModal;
