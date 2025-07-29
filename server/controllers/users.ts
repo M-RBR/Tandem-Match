@@ -5,24 +5,8 @@ import { encryptPassword } from "../utils/hashPassword";
 
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
-    const users = await UserModel.find().select("-password"); // or only use "email username" to get these fields (see Postman)
+    const users = await UserModel.find().select(""); // or only use "email username" to get these fields (see Postman) // or: select("-password");
     res.status(users.length === 0 ? 204 : 200).json(users);
-  } catch (error) {
-    handleError(error, res);
-  }
-};
-
-export const getUserByUN = async (req: Request, res: Response) => {
-  try {
-    const search = req.params.search;
-    const user = await UserModel.findOne({ username: search }).select(
-      // perhaps consider lowercase handling with regex
-      "-password"
-    );
-    if (user) {
-      return res.status(200).json(user);
-    }
-    res.status(404).json({ error: "no user found" });
   } catch (error) {
     handleError(error, res);
   }
@@ -30,7 +14,7 @@ export const getUserByUN = async (req: Request, res: Response) => {
 
 export const register = async (req: Request, res: Response) => {
   try {
-    const { email, username, password } = req.body;
+    const { email, password } = req.body;
     if (!email || !password) {
       return res
         .status(400)
@@ -43,7 +27,7 @@ export const register = async (req: Request, res: Response) => {
     const encryptedPassword = await encryptPassword(password);
     console.log(encryptedPassword);
     const newUser = await UserModel.create({
-      ...req.body,
+      email,
       password: encryptedPassword,
     });
     console.log(newUser);
@@ -51,7 +35,6 @@ export const register = async (req: Request, res: Response) => {
     res.status(201).json({
       user: {
         email: newUser.email,
-        username: newUser.username,
         _id: newUser._id,
         createdAt: newUser.createdAt,
       },
@@ -69,7 +52,7 @@ export const updateUser = async (req: Request, res: Response) => {
 
     const updateUser = await UserModel.findByIdAndUpdate(_id, body, {
       new: true,
-    }).select("-password -updatedAt");
+    }).select(""); // possible: }).select("-password -updatedAt");
     res.status(200).json(updateUser);
   } catch (error) {
     handleError(error, res);

@@ -356,7 +356,7 @@ const CreateProfile = () => {
                 id="about"
                 name="about"
                 required
-                placeholder="Write something about yourself, your interests, and what you are looking for in a tandem partner (max. ca. 100 words)."
+                placeholder="Write something about yourself, your interests, and what you are looking for in a tandem partner (ca. 100 words)."
                 onChange={handleChange}
                 className="w-full p-2 border border-green-300 rounded h-78"
               />

@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { X, Eye, EyeOff } from "lucide-react";
 
 type AuthModalProps = {
@@ -8,14 +9,16 @@ type AuthModalProps = {
 
 function AuthModal({ onClose, mode: initialMode }: AuthModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   const [mode, setMode] = useState<"signup" | "login">(initialMode); // initialMode renames mode prop inside component, only used once tol initialize local state
-  const [email, setEmail] = useState<string | null>(null);
-  const [password, setPassword] = useState<string | null>(null);
-  const [confirmPassword, setConfirmPassword] = useState<string | null>(null);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const closeModal = (e: React.MouseEvent<HTMLDivElement>) => {
     if (modalRef.current === e.target) {
@@ -39,35 +42,81 @@ function AuthModal({ onClose, mode: initialMode }: AuthModalProps) {
     return null;
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
+    setIsLoading(true);
 
-    if (mode === "signup") {
-      if (password === null || confirmPassword === null) {
-        setError("Please enter and confirm your password.");
-        return;
-      }
+    try {
+      if (mode === "signup") {
+        if (!password || !confirmPassword) {
+          throw new Error("Please enter and confirm your password.");
+        }
 
-      if (password !== confirmPassword) {
-        setError("Passwords must match.");
-        return;
-      }
+        if (password !== confirmPassword) {
+          throw new Error("Passwords must match.");
+        }
 
-      const passwordError = validatePassword(password);
-      if (passwordError) {
-        setError(passwordError);
-        return;
+        const passwordError = validatePassword(password);
+        if (passwordError) {
+          throw new Error(passwordError);
+        }
+
+        // API call to register endpoint
+        const response = await fetch(
+          "http://localhost:5000/api/users/register",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email,
+              password,
+            }),
+          }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Registration failed");
+        }
+
+        console.log("Registration successful:", data);
+        onClose();
+        navigate("/createprofile", { state: { email } }); // Pass email to createprofile
+      } else {
+        // TODO: Add login API call here
+        console.log("Logging in with:", email, password);
+        onClose();
       }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+      console.error("Authentication error:", err);
+    } finally {
+      setIsLoading(false);
     }
+  };
+
+  /*
 
     console.log(
       `${mode === "signup" ? "Signing up" : "Logging in"} with:`,
       email,
       password
     );
-    onClose();
+
+    if (mode === "signup") {
+      onClose();
+      navigate("/createprofile");
+    } else {
+      // add redirection logic for login later to profile cards page
+      onClose();
+    }
   };
+
+  */
 
   const toggleMode = () => {
     setMode(mode === "signup" ? "login" : "signup");
@@ -109,6 +158,7 @@ function AuthModal({ onClose, mode: initialMode }: AuthModalProps) {
               type="email"
               placeholder="Enter email"
               required
+              value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-green-900 leading-tight focus:outline-none focus:shadow-outline"
             />
@@ -129,6 +179,7 @@ function AuthModal({ onClose, mode: initialMode }: AuthModalProps) {
                 type={showPassword ? "text" : "password"}
                 placeholder="******"
                 required
+                value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-green-900 leading-tight focus:outline-none focus:shadow-outline"
               />
@@ -159,6 +210,7 @@ function AuthModal({ onClose, mode: initialMode }: AuthModalProps) {
                   type={showConfirmPassword ? "text" : "password"}
                   placeholder="******"
                   required
+                  value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-green-900 leading-tight focus:outline-none focus:shadow-outline"
                 />
@@ -187,6 +239,7 @@ function AuthModal({ onClose, mode: initialMode }: AuthModalProps) {
           <div className="flex flex-col items-center">
             <button
               type="submit"
+              disabled={isLoading}
               className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             >
               {mode === "signup" ? "Sign up" : "Log in"}
@@ -195,15 +248,16 @@ function AuthModal({ onClose, mode: initialMode }: AuthModalProps) {
             <button
               type="button"
               onClick={toggleMode}
-              className="mt-4 text-sm text-green-600 hover:text-green-800"
+              disabled={isLoading}
+              className="mt-4 text-sm text-green-700 hover:text-green-800 "
             >
               {mode === "signup"
-                ? "Already have an account? Log in"
-                : "Don't have an account yet? Sign up"}
+                ? "Already have an account? Log in!"
+                : "Don't have an account yet? Sign up!"}
             </button>
 
             {mode === "signup" && (
-              <p className="mt-4 text-xs text-gray-600 text-center font-bold italic">
+              <p className="mt-4 text-xs text-gray-400 text-center font-bold italic">
                 By clicking Sign up, you agree to the processing of your data.
               </p>
             )}
