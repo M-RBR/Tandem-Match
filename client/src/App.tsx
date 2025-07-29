@@ -1,7 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
-import CreateProfile from "./pages/CreateProfile";
 import Navbar from "./components/Navbar";
+import CreateProfile from "./pages/CreateProfile";
+import ProfileCardsPage from "./pages/ProfileCardsPage";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/createprofile" element={<CreateProfile />} />
+            <Route path="/displayprofiles" element={<ProfileCardsPage />} />
             {/* other routes... */}
           </Routes>
         </main>

@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { handleError } from "../utils/errorHandling";
 import UserModel from "../models/users";
 import { encryptPassword } from "../utils/hashPassword";
+import { comparePassword } from "../utils/hashPassword";
 
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
@@ -56,5 +57,33 @@ export const updateUser = async (req: Request, res: Response) => {
     res.status(200).json(updateUser);
   } catch (error) {
     handleError(error, res);
+  }
+};
+
+export const login = async (req: Request, res: Response) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ error: "Email and password required" });
+    }
+
+    const user = await UserModel.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ error: "Invalid credentials" }); //generic message
+    }
+
+    const isMatch = await comparePassword(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ error: "Invalid credentials" }); //generic message
+    }
+
+    res.status(200).json({
+      user: {
+        email: user.email,
+        _id: user._id,
+      },
+    });
+  } catch (err) {
+    handleError(err, res);
   }
 };

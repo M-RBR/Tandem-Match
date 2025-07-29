@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { X, Eye, EyeOff } from "lucide-react";
+import { useUser } from "../contexts/UserContext";
 
 type AuthModalProps = {
   onClose: () => void;
@@ -10,6 +11,8 @@ type AuthModalProps = {
 function AuthModal({ onClose, mode: initialMode }: AuthModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+
+  const { setUser } = useUser();
 
   const [mode, setMode] = useState<"signup" | "login">(initialMode); // initialMode renames mode prop inside component, only used once tol initialize local state
   const [email, setEmail] = useState<string>("");
@@ -62,7 +65,7 @@ function AuthModal({ onClose, mode: initialMode }: AuthModalProps) {
           throw new Error(passwordError);
         }
 
-        // API call to register endpoint
+        // API call to register endpoint user
         const response = await fetch(
           "http://localhost:5000/api/users/register",
           {
@@ -87,9 +90,27 @@ function AuthModal({ onClose, mode: initialMode }: AuthModalProps) {
         onClose();
         navigate("/createprofile", { state: { email } }); // Pass email to createprofile
       } else {
-        // TODO: Add login API call here
-        console.log("Logging in with:", email, password);
+        // LOgin API call
+        const response = await fetch("http://localhost:5000/api/users/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Login failed");
+        }
+
+        console.log("Login successful:", data);
+
+        setUser(data.user);
+
         onClose();
+        navigate("/displayprofiles", { state: { email } });
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
