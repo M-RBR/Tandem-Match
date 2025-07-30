@@ -2,16 +2,9 @@ import { Request, Response } from "express";
 import { handleError } from "../utils/errorHandling";
 import UserModel from "../models/users";
 import { encryptPassword } from "../utils/hashPassword";
-import { comparePassword } from "../utils/hashPassword";
-
-export const getAllUsers = async (req: Request, res: Response) => {
-  try {
-    const users = await UserModel.find().select(""); // or only use "email username" to get these fields (see Postman) // or: select("-password");
-    res.status(users.length === 0 ? 204 : 200).json(users);
-  } catch (error) {
-    handleError(error, res);
-  }
-};
+import { comparePassword } from "../utils/hashPassword"; // check the implementation of this line
+import bcrypt from "bcrypt";
+import { generateToken } from "../utils/generateToken";
 
 export const register = async (req: Request, res: Response) => {
   try {
@@ -60,30 +53,70 @@ export const updateUser = async (req: Request, res: Response) => {
   }
 };
 
+// LOGIN
+
 export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
+    console.log("details:", email, password);
     if (!email || !password) {
-      return res.status(400).json({ error: "Email and password required" });
+      return res
+        .status(400)
+        .json({ error: "Both email and password are required" });
     }
+
+    // validate email + password correctly formatted
 
     const user = await UserModel.findOne({ email });
+    console.log("found user", user);
     if (!user) {
-      return res.status(400).json({ error: "Invalid credentials" }); //generic message
+      return res.status(404).json({ error: "no user with that email" }); // change to generic password
     }
-
-    const isMatch = await comparePassword(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ error: "Invalid credentials" }); //generic message
+    console.log("password", password, "hashedPW", user.password);
+    const isValid = await bcrypt.compare(password, user.password);
+    console.log("isValid", isValid);
+    if (!isValid) {
+      return res.status(400).json({ error: "password is wrong" }); // change to generic password
     }
-
+    user.set("password", undefined);
+    const token = generateToken(user._id.toString(), user.email);
+    console.log(token);
     res.status(200).json({
-      user: {
-        email: user.email,
-        _id: user._id,
-      },
+      validated: true,
+      token: token,
+      user: user,
     });
   } catch (err) {
     handleError(err, res);
+  }
+};
+
+// const user = await UserModel.findOne({ email });
+// if (!user) {
+//   return res.status(400).json({ error: "Invalid credentials" }); //generic message
+// }
+
+// const isMatch = await comparePassword(password, user.password);
+// if (!isMatch) {
+//   return res.status(400).json({ error: "Invalid credentials" }); //generic message
+//  }
+
+// res.status(200).json({
+//   user: {
+//     email: user.email,
+//     _id: user._id,
+//   },
+// });
+// } catch (err) {
+//   handleError(err, res);
+//  }
+// };
+
+export const getAllUsers = async (req: Request, res: Response) => {
+  try {
+    const users = await UserModel.find().select("-password");
+    res.json(users);
+  } catch (error) {
+    handleError(error, res);
   }
 };

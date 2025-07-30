@@ -79,7 +79,8 @@ const LanguageSelector = ({
         <button
           type="button"
           onClick={onRemove}
-          className="text-red-500 font-bold"
+          className="text-red-500 hover:text-white hover:bg-red-500 font-bold w-6 h-6 flex items-center justify-center rounded-full border border-red-500 transition-colors duration-200"
+          aria-label="Remove language"
         >
           ×
         </button>
