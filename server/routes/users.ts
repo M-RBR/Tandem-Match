@@ -1,12 +1,12 @@
 import express from "express";
 import multer from "multer";
 import { getAllUsers, register, updateUser, login } from "../controllers/users";
-// revise and add middlewares/jwt (jwAuth, testing Middlewares)
+import { verifyToken } from "../middlewares/authMiddleware";
 
 //  Multer Configuration (review later if necessary)
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/"); // folder added to server side
+    cb(null, "uploads/"); // revise: deleted folder
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + "-" + file.originalname);
@@ -17,25 +17,32 @@ const upload = multer({ storage: storage }); // Initialize Multer
 
 const router = express.Router();
 
-// Routes:
-
+// Test route (public)
 router.get("/test", (req, res) => {
   res.send("User routes are working");
 });
 
-// auth endpoints
+// Auth routes (public)
 router.post("/register", register);
 router.post("/login", login);
-// user endpoints
 
-router.get("/", getAllUsers);
-// router.get("/:search", getUserByUN);
-router.post("/update/:_id", updateUser); // perhaps change to: router.post("/update", jwtAuth, updateUser);
+// Protected routes (requires valid JWT)
+router.get("/", verifyToken, getAllUsers);
+router.post("/update/:_id", verifyToken, updateUser);
 
+// Upload route (protect at later point?)
 router.post("/image", upload.single("image"), (req, res) => {
-  // also 'upload.array possible' for multiple photos
   console.log(req.file);
   res.send("File successfully uploaded");
 });
 
 export default router;
+
+/* protect image upload:
+
+router.post("/image", verifyToken, upload.single("image"), (req, res) => {
+  console.log(req.file);
+  res.send("File successfully uploaded");
+});
+
+*/

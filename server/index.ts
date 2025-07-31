@@ -67,15 +67,14 @@ app.use(
   })
 );
 
-// >>>>>>>>>>> THIS IS THE CRITICAL CHANGE YOU NEED TO MAKE <<<<<<<<<<<
+// Added, revise later; use baseURL?
 app.use(
   cors({
-    origin: "http://localhost:5173", // Explicitly allow your client's origin
-    methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
-    credentials: true, // If you plan to send cookies or authorization headers
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
   })
 );
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 app.post("/testing", (req, res) => {
   res.send("Hello World!");

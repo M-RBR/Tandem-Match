@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react"; // added explicit React import because of UserContext.Provider
+import { createContext, useContext, useState, useEffect } from "react"; // added explicit React import because of error with UserContext.Provider
 import type { ReactNode } from "react";
 
 type User = {
@@ -8,21 +8,45 @@ type User = {
 
 type UserContextType = {
   user: User;
-  setUser: (user: User) => void;
+  setUser: (user: User, token?: string) => void;
+  token: string | null;
   logout: () => void;
 };
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User>(null);
+  const [user, setUserState] = useState<User>(null);
+  const [token, setTokenState] = useState<string | null>(null);
+
+  useEffect(() => {
+    const savedToken = localStorage.getItem("token");
+    const savedUser = localStorage.getItem("user");
+
+    if (savedToken && savedUser) {
+      setTokenState(savedToken);
+      setUserState(JSON.parse(savedUser));
+    }
+  }, []);
+
+  const setUser = (user: User, token?: string) => {
+    setUserState(user);
+    if (user && token) {
+      setTokenState(token);
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+    }
+  };
 
   const logout = () => {
-    setUser(null);
+    setUserState(null);
+    setTokenState(null);
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
   };
 
   return (
-    <UserContext.Provider value={{ user, setUser, logout }}>
+    <UserContext.Provider value={{ user, setUser, token, logout }}>
       {children}
     </UserContext.Provider>
   );

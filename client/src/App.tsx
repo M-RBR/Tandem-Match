@@ -1,10 +1,18 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
 import CreateProfile from "./pages/CreateProfile";
+import { useUser } from "./contexts/UserContext";
 import ProfileCardsPage from "./pages/ProfileCardsPage";
 
 function App() {
+  const { user } = useUser();
+
   return (
     <Router>
       <div className="min-h-screen flex flex-col">
@@ -12,8 +20,14 @@ function App() {
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/createprofile" element={<CreateProfile />} />
-            <Route path="/displayprofiles" element={<ProfileCardsPage />} />
+            <Route
+              path="/createprofile"
+              element={user ? <CreateProfile /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/displayprofiles"
+              element={user ? <ProfileCardsPage /> : <Navigate to="/" />}
+            />
             {/* other routes... */}
           </Routes>
         </main>

@@ -25,14 +25,25 @@ export const register = async (req: Request, res: Response) => {
       password: encryptedPassword,
     });
     console.log(newUser);
-    //  res.status(201).json({ success: true, _id: newUser.id });
+    const token = generateToken(newUser._id.toString(), newUser.email);
     res.status(201).json({
+      validated: true,
+      token,
       user: {
         email: newUser.email,
         _id: newUser._id,
         createdAt: newUser.createdAt,
       },
     });
+
+    //  res.status(201).json({ success: true, _id: newUser.id });
+    // res.status(201).json({
+    //  user: {
+    //    email: newUser.email,
+    //    _id: newUser._id,
+    //    createdAt: newUser.createdAt,
+    //  },
+    // });
   } catch (error) {
     handleError(error, res);
   }

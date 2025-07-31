@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { X, Eye, EyeOff } from "lucide-react";
 import { useUser } from "../contexts/UserContext";
+import { baseURL } from "../utils/baseURL";
 
 type AuthModalProps = {
   onClose: () => void;
@@ -66,19 +67,16 @@ function AuthModal({ onClose, mode: initialMode }: AuthModalProps) {
         }
 
         // API call to register endpoint user
-        const response = await fetch(
-          "http://localhost:5000/api/users/register",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              email,
-              password,
-            }),
-          }
-        );
+        const response = await fetch(`${baseURL}/users/login`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            password,
+          }),
+        });
 
         const data = await response.json();
 
@@ -91,7 +89,7 @@ function AuthModal({ onClose, mode: initialMode }: AuthModalProps) {
         navigate("/createprofile", { state: { email } }); // Pass email to createprofile
       } else {
         // LOgin API call
-        const response = await fetch("http://localhost:5000/api/users/login", {
+        const response = await fetch(`${baseURL}/users/login`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -107,7 +105,7 @@ function AuthModal({ onClose, mode: initialMode }: AuthModalProps) {
 
         console.log("Login successful:", data);
 
-        setUser(data.user);
+        setUser(data.user, data.token);
 
         onClose();
         navigate("/displayprofiles", { state: { email } });
