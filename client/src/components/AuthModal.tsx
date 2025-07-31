@@ -66,8 +66,8 @@ function AuthModal({ onClose, mode: initialMode }: AuthModalProps) {
           throw new Error(passwordError);
         }
 
-        // API call to register endpoint user
-        const response = await fetch(`${baseURL}/users/login`, {
+        // API call to register user endpoint
+        const response = await fetch(`${baseURL}/users/register`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -85,8 +85,11 @@ function AuthModal({ onClose, mode: initialMode }: AuthModalProps) {
         }
 
         console.log("Registration successful:", data);
+
+        setUser(data.user, data.token); // automatically log in new user
+
         onClose();
-        navigate("/createprofile", { state: { email } }); // Pass email to createprofile
+        navigate("/createprofile", { state: { email } }); // pass email to createprofile
       } else {
         // LOgin API call
         const response = await fetch(`${baseURL}/users/login`, {
