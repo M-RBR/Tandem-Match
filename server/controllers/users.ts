@@ -102,6 +102,10 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
+export const getActiveUser = (req: Request, res: Response) => {
+  res.status(200).json({ message: "token validated", user: req.user });
+};
+
 // const user = await UserModel.findOne({ email });
 // if (!user) {
 //   return res.status(400).json({ error: "Invalid credentials" }); //generic message
