@@ -18,7 +18,7 @@ app.use(
     extended: true,
   })
 );
-app.use(cors());
+app.use(cors()); //!!!!
 
 app.post("/testing", (req, res) => {
   res.send("Hello World!");
@@ -53,6 +53,8 @@ import cors from "cors";
 import userRouter from "./routes/users";
 import "dotenv/config";
 import mongoose from "mongoose";
+import { testingMiddleware } from "./middlewares/jwt";
+import configureCloudinary from "./config/cloudinary";
 
 // console.log(process.env.MAXIM);
 
@@ -66,6 +68,14 @@ app.use(
     extended: true,
   })
 );
+
+// image upload
+
+app.use(cors());
+configureCloudinary();
+// app.use("/", express.static("documentation")); // why is this here?
+app.use("/images", express.static("uploads")); // change this to not have local upload?
+app.use(testingMiddleware);
 
 // Added, revise later; use baseURL?
 app.use(

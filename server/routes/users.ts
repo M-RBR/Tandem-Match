@@ -8,7 +8,10 @@ import {
   getActiveUser,
 } from "../controllers/users";
 import { verifyToken } from "../middlewares/authMiddleware";
-import { jwtAuth } from "../middlewares/users";
+import { jwtAuth } from "../middlewares/jwt";
+import { handleMulterResponse } from "../middlewares/multer";
+import { imageUpload } from "../utils/imageManagement";
+import { handleError } from "../utils/errorHandling";
 
 //  Multer Configuration (review later if necessary)
 const storage = multer.diskStorage({
@@ -38,6 +41,29 @@ router.get("/me", jwtAuth, getActiveUser);
 router.get("/", verifyToken, getAllUsers);
 // router.get("/:search", getUserByUN)
 router.post("/update/:_id", verifyToken, updateUser);
+
+router.post(
+  "/image",
+  jwtAuth,
+  upload.single("image"),
+  handleMulterResponse,
+  async (req, res) => {
+    try {
+      console.log(req.file);
+      if (req.file) {
+        const result = await imageUpload(
+          req.file,
+          "MERN-project/user_profiles"
+        );
+        console.log(result);
+      }
+      res.send("image testing endpoint");
+    } catch (error) {
+      console.log(error);
+      handleError(error, res);
+    }
+  }
+);
 
 export default router;
 
