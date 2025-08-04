@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import AsyncSelect from "react-select/async";
 import languageData from "../data/languages.json";
+// import { baseURL } from "../utils/baseURL";
 
 const LANGUAGE_LEVELS = [
   "Beginner",
@@ -135,6 +136,47 @@ const CreateProfile = () => {
   const handleChange = () => {
     console.log("change");
   };
+
+  /*
+
+  const [imageFile, setImageFile] = useState<null | file>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(e.target.files);
+    setImageFile(e.target.files && e.target.files[0]);
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if ((username, email, imageFile)) console.log(username, email, imageFile);
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const headers = new Headers();
+      headers.append("Authorization", "Bearer " + token);
+
+      const body = new FormData();
+      body.append("username", username!);
+      body.append("email", email!);
+      if (imageFile) {
+        body.append("image", imageFile);
+      }
+      const requestOptions = {
+        method: "POST"
+        headers: headers,
+        body: body
+      };
+      const response = await fetch(baseURL  + "/users/update", requestOptions)
+      if (response.ok) {
+        const result: User = await response.json()
+        setUser(result)
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  */
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-white p-6">
@@ -321,18 +363,20 @@ const CreateProfile = () => {
           </section>
 
           {/* Right Section */}
+
+          {/* Profile Picture / Image */}
           <section className="flex-1 bg-white p-6 rounded-lg shadow-lg">
             <div className="mb-4">
               <label
-                htmlFor="url"
+                htmlFor="image"
                 className="block text-green-700 font-medium mb-2"
               >
-                Profile photo URL
+                {/*  <PreviewImage file={imageFile} /> current={user!.image} */}
               </label>
               <input
-                type="url"
+                type="file"
                 name="url"
-                id="url"
+                id="image"
                 onChange={handleChange}
                 required
                 className="w-full p-2 border border-green-300 rounded"

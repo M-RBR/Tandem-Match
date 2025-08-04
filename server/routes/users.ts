@@ -38,9 +38,17 @@ router.post("/login", login);
 router.get("/me", jwtAuth, getActiveUser);
 
 // Protected routes (requires valid JWT)
-router.get("/", verifyToken, getAllUsers);
+router.get("/", verifyToken, getAllUsers); // change verifyToken to jwtAuth?
 // router.get("/:search", getUserByUN)
-router.post("/update/:_id", verifyToken, updateUser);
+router.post(
+  "/update/:_id",
+  verifyToken,
+  upload.single("image"),
+  handleMulterResponse,
+  updateUser
+); // change verifyToken to jwtAuth?
+
+/*
 
 router.post(
   "/image",
@@ -64,6 +72,8 @@ router.post(
     }
   }
 );
+
+*/
 
 export default router;
 
