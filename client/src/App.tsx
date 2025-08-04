@@ -11,7 +11,11 @@ import { useUser } from "./contexts/UserContext";
 import ProfileCardsPage from "./pages/ProfileCardsPage";
 
 function App() {
-  const { user } = useUser();
+  const { user, isLoading } = useUser();
+
+  if (isLoading) {
+    return <div>Loading...</div>; // Perhaps change later to a loading spinner
+  }
 
   return (
     <Router>

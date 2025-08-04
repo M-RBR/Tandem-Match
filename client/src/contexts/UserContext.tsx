@@ -11,6 +11,7 @@ type UserContextType = {
   setUser: (user: User, token?: string) => void;
   token: string | null;
   logout: () => void;
+  isLoading: boolean;
 };
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -18,6 +19,7 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUserState] = useState<User>(null);
   const [token, setTokenState] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
@@ -27,6 +29,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       setTokenState(savedToken);
       setUserState(JSON.parse(savedUser));
     }
+    setIsLoading(false);
   }, []);
 
   const setUser = (user: User, token?: string) => {
@@ -46,7 +49,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <UserContext.Provider value={{ user, setUser, token, logout }}>
+    <UserContext.Provider value={{ user, setUser, token, logout, isLoading }}>
       {children}
     </UserContext.Provider>
   );
