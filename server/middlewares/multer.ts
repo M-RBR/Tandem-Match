@@ -5,28 +5,27 @@ import path from "path";
 declare global {
   namespace Express {
     interface Request {
-      multerError: string;
+      multerError?: string;
+      fileValidationError?: string;
     }
   }
 }
 
-export const upload = multer({
-  storage: multer.diskStorage({
-    // destination: "uploads/",
-    // filename: function (req, file, cb) {
-    //  const fileExt = path.extname(file.originalname);
-    //  let filename = req.user._id + "-" + Date.now() + fileExt;
-    //  return cb(null, filename);
-    // },
-  }),
+const storage = multer.memoryStorage(); // using momory storage instead of disk storage, since images are uploaded directly on Cloudinary
 
+export const upload = multer({
+  storage: storage,
+  limits: {
+    files: 1,
+    fileSize: 5 * 1024 * 1024, // equals 5MB limit
+  },
   fileFilter: (req, file, cb) => {
-    const fileExt = path.extname(file.originalname);
-    if (fileExt !== ".jpg" && fileExt !== ".jpeg" && fileExt !== ".png") {
-      // cb(new Error("File extension not supported"));
-      req.multerError = "File extension not supported";
-      cb(null, false);
-      return;
+    const fileExt = path.extname(file.originalname).toLowerCase();
+    const allowedTypes = [".jpg", ".jpeg", ".png"];
+
+    if (!allowedTypes.includes(fileExt)) {
+      req.fileValidationError = "Only image files (jpg, jpeg, png) are allowed";
+      return cb(null, false); // consider adding check for MIME types as well to identify a file’s true format, not just its extension
     }
     cb(null, true);
   },
@@ -37,8 +36,14 @@ export const handleMulterResponse = (
   res: Response,
   next: NextFunction
 ) => {
-  if (req.multerError) {
-    return res.status(403).json({ error: req.multerError });
+  if (req.fileValidationError) {
+    return res.status(400).json({
+      error: req.fileValidationError,
+      details: {
+        allowedTypes: ["jpg", "jpeg", "png"],
+        maxSize: "5MB",
+      },
+    });
   }
   next();
 };

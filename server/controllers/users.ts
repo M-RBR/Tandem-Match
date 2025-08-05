@@ -5,7 +5,7 @@ import { encryptPassword } from "../utils/hashPassword";
 import { comparePassword } from "../utils/hashPassword"; // check the implementation of this line
 import bcrypt from "bcrypt";
 import { generateToken } from "../utils/generateToken";
-import { imageUpload, removeTempFile } from "../utils/imageManagement";
+import { imageUpload } from "../utils/imageManagement";
 
 export const register = async (req: Request, res: Response) => {
   try {
@@ -52,13 +52,15 @@ export const register = async (req: Request, res: Response) => {
 
 export const updateUser = async (req: Request, res: Response) => {
   try {
-    const _id = req.params._id; // comment this line out?
+    const _id = req.params._id;
     const body = req.body;
     console.log(_id, body);
+
     if (req.file) {
       body.image = await imageUpload(req.file, "MERN-project/user_profiles");
     }
     // if body.password, encrypt password
+
     const updateUser = await UserModel.findByIdAndUpdate(_id, body, {
       new: true,
     }).select("-password -updatedAt"); // also possible: }).select("");
@@ -70,10 +72,6 @@ export const updateUser = async (req: Request, res: Response) => {
     res.status(200).json(updateUser);
   } catch (error) {
     handleError(error, res);
-  } finally {
-    if (req.file) {
-      removeTempFile(req.file);
-    }
   }
 };
 

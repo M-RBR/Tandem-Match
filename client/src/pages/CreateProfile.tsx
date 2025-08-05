@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
+import type { ChangeEvent } from "react";
 import AsyncSelect from "react-select/async";
 import languageData from "../data/languages.json";
-// import { baseURL } from "../utils/baseURL";
+import { useAuthFetch } from "../utils/authFetch"; // Added: For authenticated requests
+import { useUser } from "../contexts/UserContext"; // Added: To update user state
+import { useNavigate } from "react-router-dom"; // Added: For redirect after submission
 
 const LANGUAGE_LEVELS = [
   "Beginner",
@@ -99,8 +102,49 @@ const CreateProfile = () => {
   >([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // states for image handling
+
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const authFetch = useAuthFetch();
+  const { user, setUser } = useUser();
+  const navigate = useNavigate();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const handleChange = () => {};
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+
+      const validTypes = ["image/jpeg", "image/png"];
+      if (!validTypes.includes(file.type)) {
+        setErrorMessage("Only JPEG or PNG images are allowed");
+        return;
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        setErrorMessage("Image must be smaller than 5MB");
+        return;
+      }
+
+      setImageFile(file);
+      setErrorMessage(null);
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        setPreviewUrl(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsUploading(true);
+
+    // validate languages
 
     const hasValidSpoken = spokenLanguages.some(
       (entry) => entry.language !== null
@@ -111,72 +155,72 @@ const CreateProfile = () => {
 
     if (!hasValidSpoken || !hasValidLearning) {
       setErrorMessage(
-        "Please select at least one language you speak and one language you want to learn."
+        "Please select at least one spoken and one learning language"
       );
+      setIsUploading(false);
       return;
     }
 
-    setErrorMessage(null);
+    const formData = new FormData();
 
-    const formattedSpoken = spokenLanguages.map((l) => ({
-      code: l.language?.value,
-      name: l.language?.label,
-      level: l.level,
-    }));
+    const target = e.target as typeof e.target & {
+      first_name: { value: string };
+      dob_day: { value: string };
+      gender_identity: { value: string };
+      gender_interest: { value: string };
+      about: { value: string };
+    };
 
-    const formattedLearning = learningLanguages.map((l) => ({
-      code: l.language?.value,
-      name: l.language?.label,
-      level: l.level,
-    }));
+    formData.append("first_name", target.first_name.value);
+    formData.append("dob_day", target.dob_day.value);
+    formData.append("gender_identity", target.gender_identity.value);
+    formData.append("gender_interest", target.gender_interest.value);
+    formData.append("about", target.about.value);
 
-    console.log({ formattedSpoken, formattedLearning });
-  };
+    // Append languages (matches controller structure)
+    formData.append(
+      "spokenLanguages",
+      JSON.stringify(
+        spokenLanguages.map((l) => ({
+          code: l.language?.value,
+          name: l.language?.label,
+          level: l.level,
+        }))
+      )
+    );
 
-  const handleChange = () => {
-    console.log("change");
-  };
+    formData.append(
+      "learningLanguages",
+      JSON.stringify(
+        learningLanguages.map((l) => ({
+          code: l.language?.value,
+          name: l.language?.label,
+          level: l.level,
+        }))
+      )
+    );
 
-  /*
+    if (imageFile) {
+      formData.append("image", imageFile);
+    }
 
-  const [imageFile, setImageFile] = useState<null | file>(null);
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.files);
-    setImageFile(e.target.files && e.target.files[0]);
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if ((username, email, imageFile)) console.log(username, email, imageFile);
     try {
-      const token = localStorage.getItem("token");
-      if (!token) return;
-      const headers = new Headers();
-      headers.append("Authorization", "Bearer " + token);
+      const response = await authFetch("/users/update", {
+        method: "POST",
+        body: formData,
+      });
 
-      const body = new FormData();
-      body.append("username", username!);
-      body.append("email", email!);
-      if (imageFile) {
-        body.append("image", imageFile);
-      }
-      const requestOptions = {
-        method: "POST"
-        headers: headers,
-        body: body
-      };
-      const response = await fetch(baseURL  + "/users/update", requestOptions)
-      if (response.ok) {
-        const result: User = await response.json()
-        setUser(result)
-      }
+      const data = await response.json();
+
+      setUser({ ...user, ...data });
+      navigate("/displayprofiles"); // CHECK WHETHER THIS IS CORRECT
     } catch (error) {
-      console.log(error);
+      console.error("Upload failed:", error);
+      setErrorMessage("Profile creation failed. Please try again.");
+    } finally {
+      setIsUploading(false);
     }
   };
-
-  */
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-white p-6">
@@ -371,21 +415,31 @@ const CreateProfile = () => {
                 htmlFor="image"
                 className="block text-green-700 font-medium mb-2"
               >
-                {/*  <PreviewImage file={imageFile} /> current={user!.image} */}
+                Profile Picture
               </label>
               <input
                 type="file"
-                name="url"
                 id="image"
-                onChange={handleChange}
-                required
+                name="image"
+                accept="image/jpeg, image/png"
+                onChange={handleFileChange}
+                ref={fileInputRef}
                 className="w-full p-2 border border-green-300 rounded"
+                required
               />
             </div>
 
-            {/* Image Preview Placeholder */}
+            {/* Image Preview */}
             <div className="mt-4 border-2 border-dashed border-green-300 rounded-lg h-48 flex items-center justify-center bg-green-50">
-              <span className="text-green-500">Image preview</span>
+              {previewUrl ? (
+                <img
+                  src={previewUrl}
+                  alt="Preview"
+                  className="h-full w-full object-cover rounded-lg"
+                />
+              ) : (
+                <span className="text-green-500">Image preview</span>
+              )}
             </div>
 
             {/* About Me */}
@@ -413,10 +467,18 @@ const CreateProfile = () => {
         <div className="text-center mt-8">
           <button
             type="submit"
-            className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-200"
+            disabled={isUploading}
+            className={`bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-200 ${
+              isUploading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
           >
-            Create Profile
+            {isUploading ? "Creating Profile..." : "Create Profile"}
           </button>
+          {errorMessage && (
+            <p className="text-red-600 font-semibold text-center mt-4">
+              {errorMessage}
+            </p>
+          )}
         </div>
       </form>
     </div>

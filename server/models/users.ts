@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema(
         "https://res.cloudinary.com/dvs3spmfg/image/upload/v1754242465/placeholder_profile_nqusxp.png",
     },
     password: { type: String, required: true },
-    // profile: profileSchema,
+    // profiale: profileSchema,
   },
   { timestamps: true, collection: "users" }
 );
