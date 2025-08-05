@@ -147,10 +147,10 @@ const CreateProfile = () => {
     // validate languages
 
     const hasValidSpoken = spokenLanguages.some(
-      (entry) => entry.language !== null
+      (entry) => entry.language !== null && entry.level
     );
     const hasValidLearning = learningLanguages.some(
-      (entry) => entry.language !== null
+      (entry) => entry.language !== null && entry.level
     );
 
     if (!hasValidSpoken || !hasValidLearning) {
@@ -177,7 +177,6 @@ const CreateProfile = () => {
     formData.append("gender_interest", target.gender_interest.value);
     formData.append("about", target.about.value);
 
-    // Append languages (matches controller structure)
     formData.append(
       "spokenLanguages",
       JSON.stringify(
@@ -205,14 +204,19 @@ const CreateProfile = () => {
     }
 
     try {
-      const response = await authFetch("/users/update", {
+      const response = await authFetch(`/users/update/${user?._id}`, {
         method: "POST",
         body: formData,
       });
 
       const data = await response.json();
 
-      setUser({ ...user, ...data });
+      setUser({
+        ...user,
+        ...data,
+        spoken_languages: data.spoken_languages,
+        learning_languages: data.learning_languages,
+      });
       navigate("/displayprofiles"); // CHECK WHETHER THIS IS CORRECT
     } catch (error) {
       console.error("Upload failed:", error);

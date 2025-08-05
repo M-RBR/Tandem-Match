@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { handleError } from "../utils/errorHandling";
 import UserModel from "../models/users";
 import { encryptPassword } from "../utils/hashPassword";
-import { comparePassword } from "../utils/hashPassword"; // check the implementation of this line
+// import { comparePassword } from "../utils/hashPassword"; // check import of this line and whether it is necessary
 import bcrypt from "bcrypt";
 import { generateToken } from "../utils/generateToken";
 import { imageUpload } from "../utils/imageManagement";
@@ -59,7 +59,14 @@ export const updateUser = async (req: Request, res: Response) => {
     if (req.file) {
       body.image = await imageUpload(req.file, "MERN-project/user_profiles");
     }
-    // if body.password, encrypt password
+
+    // parsing JSON string into JS objects, necessary for arrays from FormData
+    if (body.spokenLanguages) {
+      body.spoken_languages = JSON.parse(body.spokenLanguages);
+    }
+    if (body.learningLanguages) {
+      body.learning_languages = JSON.parse(body.learningLanguages);
+    }
 
     const updateUser = await UserModel.findByIdAndUpdate(_id, body, {
       new: true,
@@ -92,21 +99,30 @@ export const login = async (req: Request, res: Response) => {
     const user = await UserModel.findOne({ email });
     console.log("found user", user);
     if (!user) {
-      return res.status(404).json({ error: "no user with that email" }); // change to generic password
+      return res.status(404).json({ error: "Invalid credentials" });
     }
     console.log("password", password, "hashedPW", user.password);
+
     const isValid = await bcrypt.compare(password, user.password);
     console.log("isValid", isValid);
     if (!isValid) {
-      return res.status(400).json({ error: "password is wrong" }); // change to generic password
+      return res.status(400).json({ error: "Invalid credentials" });
     }
+
     user.set("password", undefined);
+
     const token = generateToken(user._id.toString(), user.email);
-    console.log(token);
     res.status(200).json({
       validated: true,
       token: token,
-      user: user,
+      user: {
+        email: user.email,
+        _id: user._id,
+        first_name: user.first_name,
+        image: user.image,
+        spoken_languages: user.spoken_languages,
+        learning_languages: user.learning_languages,
+      },
     });
   } catch (err) {
     handleError(err, res);
