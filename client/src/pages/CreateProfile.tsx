@@ -408,7 +408,7 @@ const CreateProfile = () => {
 
           {/* Right Section */}
 
-          {/* Profile Picture / Image */}
+          {/* Profile Picture */}
           <section className="flex-1 bg-white p-6 rounded-lg shadow-lg">
             <div className="mb-4">
               <label
@@ -417,6 +417,7 @@ const CreateProfile = () => {
               >
                 Profile Picture
               </label>
+
               <input
                 type="file"
                 id="image"
@@ -424,12 +425,37 @@ const CreateProfile = () => {
                 accept="image/jpeg, image/png"
                 onChange={handleFileChange}
                 ref={fileInputRef}
-                className="w-full p-2 border border-green-300 rounded"
-                required
+                className="hidden"
               />
+
+              <div className="w-full flex items-center justify-between border border-green-300 p-2 rounded mb-2">
+                <span className="text-green-800 text-sm">
+                  {imageFile ? imageFile.name : "No image selected"}
+                </span>
+                {imageFile && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setImageFile(null);
+                      setPreviewUrl(null);
+                      if (fileInputRef.current) fileInputRef.current.value = "";
+                    }}
+                    className="text-red-600 hover:text-red-800 text-xl font-bold px-2"
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded shadow"
+              >
+                Upload Image
+              </button>
             </div>
 
-            {/* Image Preview */}
             <div className="mt-4 border-2 border-dashed border-green-300 rounded-lg h-48 flex items-center justify-center bg-green-50">
               {previewUrl ? (
                 <img
