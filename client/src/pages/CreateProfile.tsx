@@ -161,6 +161,12 @@ const CreateProfile = () => {
       return;
     }
 
+    if (!imageFile) {
+      setErrorMessage("Please upload a profile picture.");
+      setIsUploading(false);
+      return;
+    }
+
     const formData = new FormData();
 
     const target = e.target as typeof e.target & {
@@ -217,7 +223,7 @@ const CreateProfile = () => {
         spoken_languages: data.spoken_languages,
         learning_languages: data.learning_languages,
       });
-      navigate("/displayprofiles"); // CHECK WHETHER THIS IS CORRECT
+      navigate("/dashboard");
     } catch (error) {
       console.error("Upload failed:", error);
       setErrorMessage("Profile creation failed. Please try again.");

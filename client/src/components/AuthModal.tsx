@@ -111,7 +111,7 @@ function AuthModal({ onClose, mode: initialMode }: AuthModalProps) {
         setUser(data.user, data.token);
 
         onClose();
-        navigate("/displayprofiles", { state: { email } });
+        navigate("/dashboard", { state: { email } });
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");

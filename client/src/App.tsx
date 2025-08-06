@@ -8,7 +8,7 @@ import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
 import CreateProfile from "./pages/CreateProfile";
 import { useUser } from "./contexts/UserContext";
-import ProfileCardsPage from "./pages/ProfileCardsPage";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   const { user, isLoading } = useUser();
@@ -29,8 +29,8 @@ function App() {
               element={user ? <CreateProfile /> : <Navigate to="/" />}
             />
             <Route
-              path="/displayprofiles"
-              element={user ? <ProfileCardsPage /> : <Navigate to="/" />}
+              path="/dashboard"
+              element={user ? <Dashboard /> : <Navigate to="/" />}
             />
             {/* other routes... */}
           </Routes>
