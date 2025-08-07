@@ -155,7 +155,7 @@ const CreateProfile = () => {
 
     if (!hasValidSpoken || !hasValidLearning) {
       setErrorMessage(
-        "Please select at least one spoken and one learning language"
+        "Please select at least one spoken and one learning language and the level at which you speak them"
       );
       setIsUploading(false);
       return;
