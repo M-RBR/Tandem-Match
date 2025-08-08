@@ -10,10 +10,10 @@ export interface User {
   dob_day: string;
   gender_identity: "man" | "woman" | "diverse";
   gender_interest: "men" | "women" | "everyone";
-  about: string;
-  image: string;
   spoken_languages: Language[];
   learning_languages: Language[];
+  image: string;
+  about: string;
   createdAt: string;
   updatedAt?: string; // optional
   // matches?: string[]; // optional

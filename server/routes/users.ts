@@ -36,6 +36,5 @@ router.post(
   upload.single("image"),
   handleMulterResponse,
   updateUser
-); // change verifyToken to jwtAuth?
-
+);
 export default router;
