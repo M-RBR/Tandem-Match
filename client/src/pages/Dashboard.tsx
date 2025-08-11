@@ -196,9 +196,10 @@ export default Dashboard;
 
 import React, { useState, useEffect } from "react";
 import { useAuthFetch } from "../utils/authFetch";
-import ProfileCard from "../components/ProfileCard";
 import { useUser } from "../contexts/UserContext";
 import type { User } from "../@types";
+import ProfileCard from "../components/ProfileCard";
+import ChatContainer from "../components/ChatContainer";
 
 const Dashboard: React.FC = () => {
   const [profiles, setProfiles] = useState<User[]>([]);
@@ -267,7 +268,7 @@ const Dashboard: React.FC = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        Loading profiles...
+        Loading...
       </div>
     );
   }
@@ -282,17 +283,21 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
-      <h2 className="text-3xl font-bold text-center mb-8 text-green-700">
+      <h5 className="text-3xl italic font-bold text-center mb-8 text-green-700">
         Find your tandem match
-      </h2>
+      </h5>
 
-      <div className="relative w-80 h-96 mx-auto">
-        {profiles.length > 0 ? (
-          profiles
-            .slice(0, 2) // Show only top card and the next one for performance
-            .map((profile, index) => {
-              const swipeState = swipingCards.find((c) => c.id === profile._id);
-              return (
+      <div className="flex flex-col md:flex-row gap-8 justify-center">
+        {/* Chat Container - Left Side */}
+        <div className="w-full md:w-1/2 lg:w-1/3 bg-white rounded-lg shadow-md p-4">
+          <ChatContainer />
+        </div>
+
+        {/* Profile Cards - Right Side */}
+        <div className="w-full md:w-1/2 lg:w-1/3 flex justify-center">
+          <div className="relative w-80 h-96">
+            {profiles.length > 0 ? (
+              profiles.slice(0, 2).map((profile, index) => (
                 <div
                   key={profile._id}
                   className="absolute top-0 left-0 w-full h-full"
@@ -307,16 +312,19 @@ const Dashboard: React.FC = () => {
                     user={profile}
                     onMatch={() => handleMatch(profile._id)}
                     onReject={() => handleReject(profile._id)}
-                    swipeDirection={swipeState?.direction}
+                    swipeDirection={
+                      swipingCards.find((c) => c.id === profile._id)?.direction
+                    }
                   />
                 </div>
-              );
-            })
-        ) : (
-          <div className="text-center text-gray-500">
-            No profiles available. Check back later!
+              ))
+            ) : (
+              <div className="text-center text-gray-500">
+                No profiles available.
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

@@ -798,9 +798,9 @@ const CreateProfile = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-white p-6">
-      <h2 className="text-4xl text-green-700 font-bold italic text-center mb-12">
+      <h3 className="text-4xl text-green-700 font-bold italic text-center mb-12">
         {isEditing ? "UPDATE PROFILE" : "CREATE PROFILE"}
-      </h2>
+      </h3>
 
       <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
         <div className="flex flex-col md:flex-row gap-8">

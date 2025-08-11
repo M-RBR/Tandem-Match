@@ -153,9 +153,9 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
 
         <div className="absolute top-0 left-0 w-1/2 h-full p-4 flex flex-col justify-between">
           <div className="flex flex-col">
-            <h2 className="text-2xl font-bold text-gray-800 break-words">
+            <h4 className="text-2xl font-bold text-gray-800 break-words">
               {user.first_name}
-            </h2>
+            </h4>
             <span className="text-lg font-bold text-gray-800">
               ({calculateAge(user.dob_day || "")})
             </span>
