@@ -30,13 +30,16 @@ export const register = async (req: Request, res: Response) => {
     });
 
     const token = generateToken(newUser._id.toString(), newUser.email);
+
+    // Return full user data
+    const userResponse = await UserModel.findById(newUser._id)
+      .select("-password -__v -updatedAt")
+      .lean();
+
     res.status(201).json({
       validated: true,
       token,
-      user: {
-        _id: newUser._id,
-        email: newUser.email,
-      },
+      user: userResponse,
     });
   } catch (error) {
     handleError(error, res);
@@ -149,13 +152,16 @@ export const login = async (req: Request, res: Response) => {
     }
 
     const token = generateToken(user._id.toString(), user.email);
+
+    // Return full user data
+    const userResponse = await UserModel.findById(user._id)
+      .select("-password -__v -updatedAt")
+      .lean();
+
     res.status(200).json({
       validated: true,
       token,
-      user: {
-        _id: user._id,
-        email: user.email,
-      },
+      user: userResponse,
     });
   } catch (err) {
     handleError(err, res);
@@ -365,5 +371,33 @@ export const getAllUsers = async (req: Request, res: Response) => {
     res.json(users);
   } catch (error) {
     handleError(error, res);
+  }
+};
+
+export const addMatch = async (req: Request, res: Response) => {
+  try {
+    const currentUserId = req.user?._id;
+    const { matchId } = req.body; // ID of the liked user
+
+    if (!matchId) {
+      return res.status(400).json({ error: "matchId is required" });
+    }
+
+    // Prevent duplicate matches
+    const user = await UserModel.findById(currentUserId);
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    if (!user.matches) user.matches = [];
+    if (!user.matches.includes(matchId)) {
+      user.matches.push(matchId as any);
+      await user.save();
+    }
+
+    res
+      .status(200)
+      .json({ success: true, message: "Match added", matches: user.matches });
+  } catch (error) {
+    console.error("Error adding match:", error);
+    res.status(500).json({ error: "Failed to add match" });
   }
 };

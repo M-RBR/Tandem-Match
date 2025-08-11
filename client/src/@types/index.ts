@@ -16,5 +16,5 @@ export interface User {
   about: string;
   createdAt: string;
   updatedAt?: string; // optional
-  // matches?: string[]; // optional
+  matches?: string[]; // optional
 }

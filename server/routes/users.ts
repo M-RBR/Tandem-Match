@@ -6,6 +6,7 @@ import {
   updateUser,
   login,
   getActiveUser,
+  addMatch,
 } from "../controllers/users";
 import { jwtAuth } from "../middlewares/jwt";
 import { upload, handleMulterResponse } from "../middlewares/multer";
@@ -28,6 +29,9 @@ router.get("/me", jwtAuth, getActiveUser);
 
 // protected routes (requires valid JWT)
 router.get("/", jwtAuth, getAllUsers);
+
+// route for liking/matching
+router.post("/add-match", jwtAuth, addMatch);
 
 // router.get("/:search", getUserByUN)
 router.post(

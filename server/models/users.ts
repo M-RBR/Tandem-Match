@@ -45,7 +45,7 @@ const userSchema = new mongoose.Schema(
     image: { type: String },
     spoken_languages: [languageSchema],
     learning_languages: [languageSchema],
-    // matches: [{ type: mongoose.Schema.Types.ObjectId, ref: "users" }], // expant this later
+    matches: [{ type: mongoose.Schema.Types.ObjectId, ref: "users" }],
   },
   { timestamps: true, collection: "users" }
 );
