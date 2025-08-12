@@ -251,7 +251,7 @@ export const register = async (req: Request, res: Response) => {
 
     // Return full user data
     const userResponse = await UserModel.findById(newUser._id)
-      .select("-password -__v -updatedAt")
+      .select("-password -__v")
       .lean();
 
     res.status(201).json({
@@ -318,7 +318,7 @@ export const updateUser = async (req: Request, res: Response) => {
     const updatedUser = await UserModel.findByIdAndUpdate(_id, body, {
       new: true,
       runValidators: true, // Ensures updates match schema
-    }).select("-password -__v -updatedAt");
+    }).select("-password -__v");
 
     if (!updatedUser) {
       console.error("Update failed for user ID:", _id);
@@ -373,7 +373,7 @@ export const login = async (req: Request, res: Response) => {
 
     // Return full user data
     const userResponse = await UserModel.findById(user._id)
-      .select("-password -__v -updatedAt")
+      .select("-password -__v")
       .lean();
 
     res.status(200).json({
@@ -404,7 +404,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
     const seenIds = [...likedIds, ...dislikedIds, currentUserId];
 
     const users = await UserModel.find({ _id: { $nin: seenIds } })
-      .select("-password -__v -updatedAt")
+      .select("-password -__v")
       .lean();
 
     res.json(users);
@@ -544,5 +544,30 @@ export const addDislike = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error adding dislike:", error);
     res.status(500).json({ error: "Failed to add dislike" });
+  }
+};
+
+export const getMatches = async (req: Request, res: Response) => {
+  try {
+    const currentUser = await UserModel.findById(req.user?._id)
+      .select("matches")
+      .populate({
+        path: "matches",
+        select: "first_name image",
+        model: UserModel,
+      })
+      .lean();
+
+    if (!currentUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json(currentUser.matches || []);
+  } catch (error) {
+    console.error("Error fetching matches:", error);
+    res.status(500).json({
+      error: "Failed to fetch matches",
+      details: error instanceof Error ? error.message : String(error),
+    });
   }
 };

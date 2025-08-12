@@ -1,5 +1,5 @@
 import express from "express";
-import multer from "multer";
+// import multer from "multer";
 import {
   getAllUsers,
   register,
@@ -9,6 +9,7 @@ import {
   addDislike,
   addLike,
   addMatch,
+  getMatches,
 } from "../controllers/users";
 import { jwtAuth } from "../middlewares/jwt";
 import { upload, handleMulterResponse } from "../middlewares/multer";
@@ -31,8 +32,9 @@ router.get("/me", jwtAuth, getActiveUser);
 
 // protected routes (requires valid JWT)
 router.get("/", jwtAuth, getAllUsers);
+router.get("/matches", jwtAuth, getMatches); // NEW ROUTE
 
-// router.get("/:search", getUserByUN)
+// profile update route
 router.post(
   "/update/:_id",
   jwtAuth,
@@ -41,12 +43,12 @@ router.post(
   updateUser
 );
 
-// new: routes for liking and disliking profiles !!!!
+// NEW: routes for liking and disliking profiles !!!!
 
 router.post("/add-like", jwtAuth, addLike);
 router.post("/add-dislike", jwtAuth, addDislike);
 
-// route for liking/matching
-router.post("/add-match", jwtAuth, addMatch);
+// route for liking/matching // CHECK IF STILL NEEDED
+// router.post("/add-match", jwtAuth, addMatch);
 
 export default router;

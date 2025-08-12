@@ -10,10 +10,10 @@ const ChatContainer = () => {
       </div>
 
       <div className="flex border-b border-green-200">
-        <button className="flex-1 py-2 font-medium text-green-700 hover:bg-green-50">
-          Matches
+        <button className="flex-1 py-2 font-medium text-green-700 hover:bg-gray-50">
+          Your Matches
         </button>
-        <button className="flex-1 py-2 font-medium text-green-700 hover:bg-green-50">
+        <button className="flex-1 py-2 font-medium text-green-700 hover:bg-gray-50">
           Chat
         </button>
       </div>

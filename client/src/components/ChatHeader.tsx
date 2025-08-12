@@ -4,8 +4,9 @@ const ChatHeader = () => {
   const { user } = useUser();
 
   return (
-    <div className="flex items-center gap-3 p-1 bg-green-50 rounded-lg">
+    <div className="flex items-center justify-center gap-3 p-1 bg-green-50 rounded-lg">
       {/* Profile Image */}
+      <p className="text-lg font-semibold text-green-800">Hi,</p>
       {user?.image && (
         <div className="w-11 h-11 rounded-full overflow-hidden border-2 border-green-300">
           <img
@@ -17,13 +18,13 @@ const ChatHeader = () => {
       )}
 
       {/* User Name */}
-      <h3 className="text-lg font-semibold text-green-800">
+      <h6 className="text-lg font-semibold text-green-800">
         {user?.first_name || "My Profile"}
-      </h3>
+      </h6>
     </div>
   );
 };
 
 export default ChatHeader;
 
-// optional add later: online status indicator
+// optional to add later: online status indicator

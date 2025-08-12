@@ -123,6 +123,8 @@ type UserDocument = {
     name: string;
     level: string;
   }> | null;
+  dislikedUsers?: Types.Array<Types.ObjectId> | null;
+  likedUsers?: Types.Array<Types.ObjectId> | null;
   matches?: Types.Array<Types.ObjectId> | null;
   createdAt?: Date;
   updatedAt?: Date;
