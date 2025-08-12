@@ -6,6 +6,8 @@ import {
   updateUser,
   login,
   getActiveUser,
+  addDislike,
+  addLike,
   addMatch,
 } from "../controllers/users";
 import { jwtAuth } from "../middlewares/jwt";
@@ -30,9 +32,6 @@ router.get("/me", jwtAuth, getActiveUser);
 // protected routes (requires valid JWT)
 router.get("/", jwtAuth, getAllUsers);
 
-// route for liking/matching
-router.post("/add-match", jwtAuth, addMatch);
-
 // router.get("/:search", getUserByUN)
 router.post(
   "/update/:_id",
@@ -41,4 +40,13 @@ router.post(
   handleMulterResponse,
   updateUser
 );
+
+// new: routes for liking and disliking profiles !!!!
+
+router.post("/add-like", jwtAuth, addLike);
+router.post("/add-dislike", jwtAuth, addDislike);
+
+// route for liking/matching
+router.post("/add-match", jwtAuth, addMatch);
+
 export default router;

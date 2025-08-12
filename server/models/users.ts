@@ -2,24 +2,30 @@
 
 import mongoose from "mongoose";
 
-// const profileSchema = new mongoose.Schema({
-//   birthdate: String,
-//   image: String,
-// });
+const languageSchema = new mongoose.Schema({
+  code: { type: String, required: true },
+  name: { type: String, required: true },
+  level: { type: String, required: true },
+});
 
 const userSchema = new mongoose.Schema(
   {
     email: { type: String, required: true, unique: true },
-    image: {
-      type: String,
-    },
     password: { type: String, required: true },
-    // profiale: profileSchema,
+    first_name: { type: String, trim: true, minLength: 2 },
+    dob_day: { type: String, match: /^\d{4}-\d{2}-\d{2}$/ }, // now stored as ISO string, perhaps chage to 'Date type'?
+    gender_identity: { type: String, enum: ["man", "woman", "diverse"] },
+    gender_interest: { type: String, enum: ["men", "women", "everyone"] },
+    about: { type: String, maxLength: 600 },
+    image: { type: String },
+    spoken_languages: [languageSchema],
+    learning_languages: [languageSchema],
+    matches: [{ type: mongoose.Schema.Types.ObjectId, ref: "users" }],
   },
   { timestamps: true, collection: "users" }
 );
 
-const UserModel = mongoose.model("users", userSchema);
+const UserModel = mongoose.model("User", userSchema);
 
 export default UserModel;
 
@@ -45,6 +51,8 @@ const userSchema = new mongoose.Schema(
     image: { type: String },
     spoken_languages: [languageSchema],
     learning_languages: [languageSchema],
+    dislikedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "users" }],
+    likedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "users" }],
     matches: [{ type: mongoose.Schema.Types.ObjectId, ref: "users" }],
   },
   { timestamps: true, collection: "users" }
