@@ -167,7 +167,7 @@ export default Dashboard;
 import React, { useState, useEffect } from "react";
 import { useAuthFetch } from "../utils/authFetch";
 import { useUser } from "../contexts/UserContext";
-import type { User } from "../@types";
+import type { User } from "../@types/user";
 import ProfileCard from "../components/ProfileCard";
 import ChatContainer from "../components/ChatContainer";
 

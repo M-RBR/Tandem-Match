@@ -5,6 +5,7 @@ import "dotenv/config";
 import mongoose from "mongoose";
 import { testingMiddleware } from "./middlewares/jwt";
 import configureCloudinary from "./config/cloudinary";
+import messageRouter from "./routes/messages"; // ADDED FOR CHAT/MESSAGES
 
 // console.log(process.env.MAXIM);
 
@@ -41,6 +42,7 @@ app.post("/testing", (req, res) => {
 });
 
 app.use("/api/users", userRouter);
+app.use("/api/messages", messageRouter); // ADDED FOR CHAT/MESSAGES
 
 app.use("/*splat", (req, res) =>
   res.status(404).json({ error: "Endpoint not found." })

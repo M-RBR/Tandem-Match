@@ -571,3 +571,17 @@ export const getMatches = async (req: Request, res: Response) => {
     });
   }
 };
+
+// NEW
+
+export const getUserById = async (req: Request, res: Response) => {
+  try {
+    const user = await UserModel.findById(req.params.id).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching user", error });
+  }
+};

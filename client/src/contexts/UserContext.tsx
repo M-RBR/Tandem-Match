@@ -67,7 +67,7 @@ export const useUser = () => {
 
 import { createContext, useContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
-import type { User } from "../@types/index";
+import type { User } from "../@types/user";
 
 type UserContextType = {
   user: User | null; // Use the imported User type and make it nullable

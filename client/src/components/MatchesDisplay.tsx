@@ -1,19 +1,13 @@
-/* 
-
-const MatchesDisplay = () => {
-  return <div>Matches</div>;
-};
-
-export default MatchesDisplay;
-
-*/
-
 import { useUser } from "../contexts/UserContext";
 import { useEffect, useState } from "react";
 import { useAuthFetch } from "../utils/authFetch";
-import type { User } from "../@types";
+import type { User } from "../@types/user";
 
-const MatchesDisplay = () => {
+interface MatchesDisplayProps {
+  onSelectMatch: (matchId: string) => void;
+}
+
+const MatchesDisplay = ({ onSelectMatch }: MatchesDisplayProps) => {
   const { user } = useUser();
   const [matches, setMatches] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
@@ -61,6 +55,7 @@ const MatchesDisplay = () => {
           <div
             key={match._id}
             className="flex flex-col items-center p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors cursor-pointer"
+            onClick={() => onSelectMatch(match._id)}
           >
             <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-green-300 mb-2">
               <img

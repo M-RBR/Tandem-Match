@@ -101,7 +101,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ user }) => {
 export default ProfileCard;
 
 */
-import type { User } from "../@types";
+import type { User } from "../@types/user";
 import { Star, X } from "lucide-react";
 
 interface ProfileCardProps {

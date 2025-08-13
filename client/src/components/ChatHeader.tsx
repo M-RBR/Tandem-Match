@@ -5,8 +5,7 @@ const ChatHeader = () => {
 
   return (
     <div className="flex items-center justify-center gap-3 p-1 bg-green-50 rounded-lg">
-      {/* Profile Image */}
-      <p className="text-lg font-semibold text-green-800">Hi,</p>
+      <p className="text-lg font-semibold text-green-800">Hi</p>
       {user?.image && (
         <div className="w-11 h-11 rounded-full overflow-hidden border-2 border-green-300">
           <img
@@ -17,7 +16,6 @@ const ChatHeader = () => {
         </div>
       )}
 
-      {/* User Name */}
       <h6 className="text-lg font-semibold text-green-800">
         {user?.first_name || "My Profile"}
       </h6>

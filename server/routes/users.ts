@@ -10,6 +10,7 @@ import {
   addLike,
   addMatch,
   getMatches,
+  getUserById, // new
 } from "../controllers/users";
 import { jwtAuth } from "../middlewares/jwt";
 import { upload, handleMulterResponse } from "../middlewares/multer";
@@ -33,6 +34,8 @@ router.get("/me", jwtAuth, getActiveUser);
 // protected routes (requires valid JWT)
 router.get("/", jwtAuth, getAllUsers);
 router.get("/matches", jwtAuth, getMatches); // NEW ROUTE
+
+router.get("/:id", jwtAuth, getUserById); //NEW
 
 // profile update route
 router.post(
