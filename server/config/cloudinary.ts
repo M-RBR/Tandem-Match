@@ -2,7 +2,6 @@ import { v2 as cloudinary } from "cloudinary";
 import "dotenv/config";
 
 const configureCloudinary = () => {
-  // added validation for environment variables
   if (
     !process.env.CLOUD_NAME ||
     !process.env.CLOUD_APIKEY ||

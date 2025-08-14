@@ -8,9 +8,8 @@ import {
   getActiveUser,
   addDislike,
   addLike,
-  addMatch,
   getMatches,
-  getUserById, // new
+  getUserById,
 } from "../controllers/users";
 import { jwtAuth } from "../middlewares/jwt";
 import { upload, handleMulterResponse } from "../middlewares/multer";
@@ -19,23 +18,20 @@ import { upload, handleMulterResponse } from "../middlewares/multer";
 
 const router = express.Router();
 
-// test route (public)
+// test route
 router.get("/test", (req, res) => {
   res.send("User routes are working");
 });
 
-// auth routes / endpoints (public)
+// auth routes
 router.post("/register", register);
 router.post("/login", login);
 
-// get active user (requires token)
+// get routes
 router.get("/me", jwtAuth, getActiveUser);
-
-// protected routes (requires valid JWT)
 router.get("/", jwtAuth, getAllUsers);
-router.get("/matches", jwtAuth, getMatches); // NEW ROUTE
-
-router.get("/:id", jwtAuth, getUserById); //NEW
+router.get("/matches", jwtAuth, getMatches);
+router.get("/:id", jwtAuth, getUserById);
 
 // profile update route
 router.post(
@@ -46,12 +42,9 @@ router.post(
   updateUser
 );
 
-// NEW: routes for liking and disliking profiles !!!!
+// routes for liking/disliking profiles
 
 router.post("/add-like", jwtAuth, addLike);
 router.post("/add-dislike", jwtAuth, addDislike);
-
-// route for liking/matching // CHECK IF STILL NEEDED
-// router.post("/add-match", jwtAuth, addMatch);
 
 export default router;

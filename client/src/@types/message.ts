@@ -1,34 +1,3 @@
-/* 
-
-export interface Message {
-  _id: string;
-  timestamp: string;
-  fromUserId: string;
-  toUserId: string;
-  message: string;
-}
-
-*/
-
-/*
-
-import type { User } from "./user";
-
-export interface BaseMessage {
-  _id: string;
-  timestamp: string;
-  fromUserId: string;
-  toUserId: string;
-  message: string;
-}
-
-export interface PopulatedMessage extends BaseMessage {
-  sender?: User;
-  recipient?: User;
-}
-
-*/
-
 import type { User } from "./user";
 
 export interface BaseMessage {

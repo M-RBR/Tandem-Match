@@ -1,36 +1,3 @@
-/*
-
-import mongoose from "mongoose";
-
-const languageSchema = new mongoose.Schema({
-  code: { type: String, required: true },
-  name: { type: String, required: true },
-  level: { type: String, required: true },
-});
-
-const userSchema = new mongoose.Schema(
-  {
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    first_name: { type: String, trim: true, minLength: 2 },
-    dob_day: { type: String, match: /^\d{4}-\d{2}-\d{2}$/ }, // now stored as ISO string, perhaps chage to 'Date type'?
-    gender_identity: { type: String, enum: ["man", "woman", "diverse"] },
-    gender_interest: { type: String, enum: ["men", "women", "everyone"] },
-    about: { type: String, maxLength: 600 },
-    image: { type: String },
-    spoken_languages: [languageSchema],
-    learning_languages: [languageSchema],
-    matches: [{ type: mongoose.Schema.Types.ObjectId, ref: "users" }],
-  },
-  { timestamps: true, collection: "users" }
-);
-
-const UserModel = mongoose.model("User", userSchema);
-
-export default UserModel;
-
-*/
-
 import mongoose from "mongoose";
 
 const languageSchema = new mongoose.Schema({

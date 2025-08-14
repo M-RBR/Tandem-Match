@@ -5,9 +5,7 @@ import "dotenv/config";
 import mongoose from "mongoose";
 import { testingMiddleware } from "./middlewares/jwt";
 import configureCloudinary from "./config/cloudinary";
-import messageRouter from "./routes/messages"; // ADDED FOR CHAT/MESSAGES
-
-// console.log(process.env.MAXIM);
+import messageRouter from "./routes/messages";
 
 const app = express();
 

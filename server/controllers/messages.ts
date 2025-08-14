@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 import MessageModel from "../models/messages";
 import { handleError } from "../utils/errorHandling";
 
-// Get messages between two users
 export const getMessages = async (req: Request, res: Response) => {
   try {
     const { userId, matchId } = req.params;
@@ -38,11 +37,10 @@ export const getMessages = async (req: Request, res: Response) => {
   }
 };
 
-// Send a new message
 export const sendMessage = async (req: Request, res: Response) => {
   try {
     const { toUserId, message } = req.body;
-    const fromUserId = req.user?._id; // Get from authenticated user
+    const fromUserId = req.user?._id;
 
     if (!toUserId || !message) {
       return res.status(400).json({
@@ -54,7 +52,6 @@ export const sendMessage = async (req: Request, res: Response) => {
       });
     }
 
-    // Verify users are matched
     const fromUser = await mongoose.model("User").findById(fromUserId);
     const toUser = await mongoose.model("User").findById(toUserId);
 

@@ -52,7 +52,6 @@ export const updateUser = async (req: Request, res: Response) => {
     console.log("Attempting to update user with ID:", _id);
     console.log("Request body keys:", Object.keys(body));
 
-    // Verify the user exists first
     const userExists = await UserModel.exists({ _id: new Types.ObjectId(_id) });
     console.log("User exists in DB:", userExists);
 
@@ -60,13 +59,11 @@ export const updateUser = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // Handle file upload if present
     if (req.file) {
       body.image = await imageUpload(req.file, "MERN-project/user_profiles");
       console.log("Uploaded image URL:", body.image);
     }
 
-    // Parse language arrays if they exist and are strings
     if (body.spoken_languages && typeof body.spoken_languages === "string") {
       try {
         body.spoken_languages = JSON.parse(body.spoken_languages);
@@ -92,12 +89,11 @@ export const updateUser = async (req: Request, res: Response) => {
       }
     }
 
-    // Add updatedAt timestamp
     body.updatedAt = new Date();
 
     const updatedUser = await UserModel.findByIdAndUpdate(_id, body, {
       new: true,
-      runValidators: true, // Ensures updates match schema
+      runValidators: true,
     }).select("-password -__v");
 
     if (!updatedUser) {
@@ -151,7 +147,6 @@ export const login = async (req: Request, res: Response) => {
 
     const token = generateToken(user._id.toString(), user.email);
 
-    // Return full user data
     const userResponse = await UserModel.findById(user._id)
       .select("-password -__v")
       .lean();
@@ -175,7 +170,6 @@ export const getActiveUser = (req: Request, res: Response) => {
 
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
-    // Exclude current user and users they've already liked/disliked
     const currentUserId = req.user?._id;
     const currentUser = await UserModel.findById(currentUserId);
 
@@ -198,13 +192,12 @@ export const getAllUsers = async (req: Request, res: Response) => {
 export const addMatch = async (req: Request, res: Response) => {
   try {
     const currentUserId = req.user?._id;
-    const { matchId } = req.body; // ID of the liked user
+    const { matchId } = req.body;
 
     if (!matchId) {
       return res.status(400).json({ error: "matchId is required" });
     }
 
-    // Prevent duplicate matches
     const user = await UserModel.findById(currentUserId);
     if (!user) return res.status(404).json({ error: "User not found" });
 
@@ -237,26 +230,21 @@ export const addLike = async (req: Request, res: Response) => {
     const currentUser = await UserModel.findById(currentUserId);
     if (!currentUser) return res.status(404).json({ error: "User not found" });
 
-    // Initialize arrays if they don't exist
     if (!currentUser.likedUsers) currentUser.likedUsers = [];
     if (!currentUser.dislikedUsers) currentUser.dislikedUsers = [];
 
-    // Remove from disliked if present
     currentUser.dislikedUsers = currentUser.dislikedUsers.filter(
       (id) => !id.equals(likedUserId)
     );
 
-    // Add to liked if not already present
     if (!currentUser.likedUsers.some((id) => id.equals(likedUserId))) {
       currentUser.likedUsers.push(likedUserId as any);
     }
 
     await currentUser.save();
 
-    // Check for mutual like
     const likedUser = await UserModel.findById(likedUserId);
     if (likedUser?.likedUsers?.includes(currentUserId as any)) {
-      // It's a match!
       if (!currentUser.matches) currentUser.matches = [];
       if (!likedUser.matches) likedUser.matches = [];
 
@@ -301,16 +289,13 @@ export const addDislike = async (req: Request, res: Response) => {
     const currentUser = await UserModel.findById(currentUserId);
     if (!currentUser) return res.status(404).json({ error: "User not found" });
 
-    // Initialize arrays if they don't exist
     if (!currentUser.dislikedUsers) currentUser.dislikedUsers = [];
     if (!currentUser.likedUsers) currentUser.likedUsers = [];
 
-    // Remove from liked if present
     currentUser.likedUsers = currentUser.likedUsers.filter(
       (id) => !id.equals(dislikedUserId)
     );
 
-    // Add to disliked if not already present
     if (!currentUser.dislikedUsers.some((id) => id.equals(dislikedUserId))) {
       currentUser.dislikedUsers.push(dislikedUserId as any);
     }
