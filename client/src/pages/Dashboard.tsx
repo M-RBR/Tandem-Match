@@ -287,8 +287,8 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
-      <h5 className="text-3xl italic font-bold text-center mb-8 text-green-700">
-        Find your tandem match
+      <h5 className="text-3xl italic font-bold text-center mt-5 mb-16 text-green-700">
+        FIND YOUR TANDEM MATCH
       </h5>
 
       <div className="flex flex-col md:flex-row gap-8 justify-center">

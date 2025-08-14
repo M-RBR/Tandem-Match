@@ -6,7 +6,7 @@ import { baseURL } from "../utils/baseURL";
 
 type AuthModalProps = {
   onClose: () => void;
-  mode: "signup" | "login"; // mode prop
+  mode: "signup" | "login";
 };
 
 function AuthModal({ onClose, mode: initialMode }: AuthModalProps) {
@@ -15,7 +15,7 @@ function AuthModal({ onClose, mode: initialMode }: AuthModalProps) {
 
   const { setUser } = useUser();
 
-  const [mode, setMode] = useState<"signup" | "login">(initialMode); // initialMode renames mode prop inside component, only used once tol initialize local state
+  const [mode, setMode] = useState<"signup" | "login">(initialMode);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
@@ -66,7 +66,6 @@ function AuthModal({ onClose, mode: initialMode }: AuthModalProps) {
           throw new Error(passwordError);
         }
 
-        // API call to register user endpoint
         const response = await fetch(`${baseURL}/users/register`, {
           method: "POST",
           headers: {
@@ -86,12 +85,11 @@ function AuthModal({ onClose, mode: initialMode }: AuthModalProps) {
 
         console.log("Registration successful:", data);
 
-        setUser(data.user, data.token); // automatically log in new user
+        setUser(data.user, data.token);
 
         onClose();
-        navigate("/createprofile", { state: { email } }); // pass email to createprofile
+        navigate("/createprofile", { state: { email } });
       } else {
-        // LOgin API call
         const response = await fetch(`${baseURL}/users/login`, {
           method: "POST",
           headers: {
