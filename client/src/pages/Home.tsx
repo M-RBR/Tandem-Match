@@ -7,7 +7,7 @@ const Home = () => {
   return (
     <>
       <div className="flex flex-col text-center">
-        <h1 className="text-3xl text-green-700  font-bold p-4">
+        <h1 className="text-4xl text-green-700  font-bold p-4">
           Tandem Match<span className="text-lg align-super ml-1">™</span>
         </h1>
         <p className="text-xl text-green-600 font-bold italic p-4">
@@ -17,7 +17,7 @@ const Home = () => {
       <div className="flex flex-col justify-center items-center p-20 ">
         <button
           onClick={() => setShowModal(true)}
-          className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full"
+          className="bg-green-500 hover:bg-green-600 text-white text-xl font-bold py-3 px-5 rounded-full"
         >
           Sign up
         </button>

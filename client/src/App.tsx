@@ -14,7 +14,7 @@ function App() {
   const { user, isLoading } = useUser();
 
   if (isLoading) {
-    return <div>Loading...</div>; // Perhaps change later to a loading spinner
+    return <div>Loading...</div>;
   }
 
   return (
@@ -32,7 +32,6 @@ function App() {
               path="/dashboard"
               element={user ? <Dashboard /> : <Navigate to="/" />}
             />
-            {/* other routes... */}
           </Routes>
         </main>
       </div>
