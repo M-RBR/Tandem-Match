@@ -81,7 +81,7 @@ export const jwtAuth = async (
   }
 };
 
-// extra log for debugging, revise later if necessary
+// extra log for debugging, review later
 
 export const testingMiddleware = (
   req: Request,

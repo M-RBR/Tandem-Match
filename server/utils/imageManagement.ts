@@ -19,27 +19,6 @@ export const imageUpload = async (
       }
     );
 
-    // this streams file buffer directly to Cloudinary
     streamifier.createReadStream(file.buffer).pipe(uploadStream);
   });
 };
-
-/*
-
-// not necssary anymore when using memory storage
-
-import fs from "fs";
-
-export const removeTempFile = (file: Express.Multer.File) => {
-  if (file) {
-    fs.unlink(file.path, (error) => {
-      if (error) {
-        console.log(error);
-      } else {
-        console.log("Temp file deleted");
-      }
-    });
-  }
-};
-
-*/

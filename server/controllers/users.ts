@@ -29,7 +29,6 @@ export const register = async (req: Request, res: Response) => {
 
     const token = generateToken(newUser._id.toString(), newUser.email);
 
-    // Return full user data
     const userResponse = await UserModel.findById(newUser._id)
       .select("-password -__v")
       .lean();
@@ -43,6 +42,8 @@ export const register = async (req: Request, res: Response) => {
     handleError(error, res);
   }
 };
+
+// NEW/UPDATE USER
 
 export const updateUser = async (req: Request, res: Response) => {
   try {
@@ -336,8 +337,6 @@ export const getMatches = async (req: Request, res: Response) => {
     });
   }
 };
-
-// NEW
 
 export const getUserById = async (req: Request, res: Response) => {
   try {

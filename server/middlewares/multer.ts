@@ -11,7 +11,7 @@ declare global {
   }
 }
 
-const storage = multer.memoryStorage(); // using momory storage instead of disk storage, since images are uploaded directly on Cloudinary
+const storage = multer.memoryStorage(); // using momory storage instead of disk storage; images are uploaded directly on Cloudinary
 
 export const upload = multer({
   storage: storage,

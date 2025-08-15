@@ -27,13 +27,13 @@ router.get("/test", (req, res) => {
 router.post("/register", register);
 router.post("/login", login);
 
-// get routes
+// protected get routes
 router.get("/me", jwtAuth, getActiveUser);
 router.get("/", jwtAuth, getAllUsers);
 router.get("/matches", jwtAuth, getMatches);
 router.get("/:id", jwtAuth, getUserById);
 
-// profile update route
+// profile update route iwth image upload
 router.post(
   "/update/:_id",
   jwtAuth,
