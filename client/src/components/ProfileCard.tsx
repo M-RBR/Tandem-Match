@@ -31,7 +31,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
 
   return (
     <div
-      className={`bg-white rounded-lg shadow-lg overflow-hidden h-96 w-80 mx-auto 
+      className={`bg-white rounded-lg shadow-lg overflow-hidden h-96 w-94 
         transition-all duration-300 ease-in-out
         ${swipeDirection === "up" ? "-translate-y-[150%] opacity-0" : ""}
         ${swipeDirection === "down" ? "translate-y-[150%] opacity-0" : ""}

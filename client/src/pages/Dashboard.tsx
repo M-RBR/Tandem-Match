@@ -123,7 +123,7 @@ const Dashboard: React.FC = () => {
 
       <div className="flex flex-col md:flex-row gap-8 justify-center">
         <div className="w-full md:w-1/2 lg:w-1/3 flex justify-center">
-          <div className="relative w-80 h-96">
+          <div className="relative w-full h-96">
             {profiles.length > 0 ? (
               profiles.slice(0, 2).map((profile, index) => (
                 <div
