@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import type { ChangeEvent } from "react";
 import AsyncSelect from "react-select/async";
 import languageData from "../data/languages.json";
@@ -104,6 +104,17 @@ const CreateProfile = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [hasChanges, setHasChanges] = useState(false);
+  const [originalUserData, setOriginalUserData] = useState<{
+    first_name?: string;
+    dob_day?: string;
+    gender_identity?: string;
+    gender_interest?: string;
+    about?: string;
+    image?: string;
+    spoken_languages?: Array<{ code: string; name: string; level: string }>;
+    learning_languages?: Array<{ code: string; name: string; level: string }>;
+  } | null>(null);
 
   const authFetch = useAuthFetch();
   const { user, setUser } = useUser();
@@ -112,6 +123,18 @@ const CreateProfile = () => {
   useEffect(() => {
     if (user?.first_name) {
       setIsEditing(true);
+
+      // Store original user data for comparison
+      setOriginalUserData({
+        first_name: user.first_name,
+        dob_day: user.dob_day,
+        gender_identity: user.gender_identity,
+        gender_interest: user.gender_interest,
+        about: user.about,
+        image: user.image,
+        spoken_languages: user.spoken_languages,
+        learning_languages: user.learning_languages,
+      });
 
       if (user.spoken_languages?.length) {
         setSpokenLanguages(
@@ -147,7 +170,87 @@ const CreateProfile = () => {
     }
   }, [user]);
 
-  const handleChange = () => {};
+  const checkLanguageChanges = useCallback(() => {
+    if (!originalUserData) return false;
+
+    // Compare spoken languages
+    const currentSpoken = spokenLanguages
+      .filter(l => l.language && l.level)
+      .map(l => ({ code: l.language?.value, name: l.language?.label, level: l.level }));
+    
+    const originalSpoken = originalUserData.spoken_languages || [];
+    
+    if (currentSpoken.length !== originalSpoken.length) return true;
+    
+    for (let i = 0; i < currentSpoken.length; i++) {
+      const current = currentSpoken[i];
+      const original = originalSpoken[i];
+      if (current.code !== original.code || current.level !== original.level) {
+        return true;
+      }
+    }
+
+    // Compare learning languages
+    const currentLearning = learningLanguages
+      .filter(l => l.language && l.level)
+      .map(l => ({ code: l.language?.value, name: l.language?.label, level: l.level }));
+    
+    const originalLearning = originalUserData.learning_languages || [];
+    
+    if (currentLearning.length !== originalLearning.length) return true;
+    
+    for (let i = 0; i < currentLearning.length; i++) {
+      const current = currentLearning[i];
+      const original = originalLearning[i];
+      if (current.code !== original.code || current.level !== original.level) {
+        return true;
+      }
+    }
+
+    return false;
+  }, [originalUserData, spokenLanguages, learningLanguages]);
+
+  const checkForChanges = useCallback(() => {
+    if (!originalUserData) return;
+
+    // Get current form values from DOM
+    const form = document.querySelector('form') as HTMLFormElement;
+    if (!form) return;
+
+    const formData = new FormData(form);
+    const currentData = {
+      first_name: formData.get('first_name') as string,
+      dob_day: formData.get('dob_day') as string,
+      gender_identity: formData.get('gender_identity') as string,
+      gender_interest: formData.get('gender_interest') as string,
+      about: formData.get('about') as string,
+    };
+
+    // Check for basic field changes
+    const hasBasicChanges = 
+      currentData.first_name !== originalUserData.first_name ||
+      currentData.dob_day !== originalUserData.dob_day ||
+      currentData.gender_identity !== originalUserData.gender_identity ||
+      currentData.gender_interest !== originalUserData.gender_interest ||
+      currentData.about !== originalUserData.about;
+
+    // Check for image changes
+    const hasImageChanges = imageFile !== null;
+
+    // Check for language changes
+    const hasLanguageChanges = checkLanguageChanges();
+
+    setHasChanges(hasBasicChanges || hasImageChanges || hasLanguageChanges);
+  }, [originalUserData, imageFile, checkLanguageChanges]);
+
+  // Track changes in language arrays
+  useEffect(() => {
+    checkForChanges();
+  }, [spokenLanguages, learningLanguages, checkForChanges]);
+
+  const handleChange = () => {
+    setTimeout(checkForChanges, 0); 
+  };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -166,6 +269,7 @@ const CreateProfile = () => {
 
       setImageFile(file);
       setErrorMessage(null);
+      setHasChanges(true); 
 
       const reader = new FileReader();
       reader.onload = () => {
@@ -258,6 +362,7 @@ const CreateProfile = () => {
         spoken_languages: data.spoken_languages,
         learning_languages: data.learning_languages,
       });
+      setHasChanges(false); 
       navigate("/dashboard");
     } catch (error) {
       console.error("Upload failed:", error);
@@ -502,19 +607,38 @@ const CreateProfile = () => {
         </div>
 
         <div className="text-center mt-8">
-          <button
-            type="submit"
-            disabled={isUploading}
-            className={`bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-200 ${
-              isUploading ? "opacity-50 cursor-not-allowed" : ""
-            }`}
-          >
-            {isUploading
-              ? "Saving..."
-              : isEditing
-              ? "Save changes / Back to dashboard "
-              : "Create Profile"}
-          </button>
+          {isEditing ? (
+            <div className="space-x-4">
+              {hasChanges && (
+                <button
+                  type="submit"
+                  disabled={isUploading}
+                  className={`bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-200 ${
+                    isUploading ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                >
+                  {isUploading ? "Saving..." : "Save changes"}
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => navigate("/dashboard")}
+                className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-200"
+              >
+                Back to dashboard
+              </button>
+            </div>
+          ) : (
+            <button
+              type="submit"
+              disabled={isUploading}
+              className={`bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-200 ${
+                isUploading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+            >
+              {isUploading ? "Saving..." : "Create Profile"}
+            </button>
+          )}
           {errorMessage && (
             <p className="text-red-600 font-semibold text-center mt-4">
               {errorMessage}
