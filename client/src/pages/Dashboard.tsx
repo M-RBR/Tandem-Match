@@ -17,6 +17,7 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     const fetchProfiles = async () => {
+
       try {
         setLoading(true);
         const response = await authFetch("/users");
@@ -42,7 +43,7 @@ const Dashboard: React.FC = () => {
       }
     };
     fetchProfiles();
-  }, [user?._id]);
+  }, [user?._id, authFetch]);
 
   const handleMatch = async (profileId: string) => {
     try {

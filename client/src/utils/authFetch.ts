@@ -1,10 +1,11 @@
+import { useCallback } from "react";
 import { useUser } from "../contexts/UserContext";
 import { baseURL } from "./baseURL";
 
 export const useAuthFetch = () => {
   const { token } = useUser();
 
-  const authFetch = async (
+  const authFetch = useCallback(async (
     path: string,
     options: RequestInit = {}
   ): Promise<Response> => {
@@ -31,7 +32,7 @@ export const useAuthFetch = () => {
     }
 
     return response;
-  };
+  }, [token]);
 
   return authFetch;
 };
