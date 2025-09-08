@@ -65,19 +65,24 @@ const Chat = ({ selectedMatch }: ChatProps) => {
                     className="w-8 h-8 rounded-full object-cover flex-shrink-0"
                   />
                 )}
-                <div
-                  className={`px-4 py-2 rounded-lg ${
-                    isCurrentUser
-                      ? "bg-green-500 text-white"
-                      : "bg-green-100 text-green-900"
-                  }`}
-                >
-                  {!isCurrentUser && (
-                    <span className="font-semibold text-xs block">
-                      {message.fromUserId.first_name}
-                    </span>
-                  )}
-                  <p className="break-words">{message.message}</p>
+                <div className="flex flex-col">
+                  <div
+                    className={`px-4 py-2 rounded-lg ${
+                      isCurrentUser
+                        ? "bg-green-300 text-black"
+                        : "bg-green-100 text-green-900"
+                    }`}
+                  >
+                    <p className="break-words">{message.message}</p>
+                  </div>
+                  <span className={`text-xs text-gray-500 italic mt-1 ${isCurrentUser ? "text-right" : "text-left"}`}>
+                    {new Date(message.createdAt).toLocaleString([], { 
+                      month: 'short', 
+                      day: 'numeric', 
+                      hour: '2-digit', 
+                      minute: '2-digit' 
+                    })}
+                  </span>
                 </div>
               </div>
             </div>

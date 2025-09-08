@@ -26,7 +26,7 @@ const ChatDisplay = ({ selectedMatch }: ChatDisplayProps) => {
     };
 
     fetchMatchedUser();
-  }, [selectedMatch]);
+  }, [selectedMatch, authFetch]);
 
   const handleMessageSent = () => {
     setRefreshCounter((prev) => prev + 1);
@@ -44,7 +44,7 @@ const ChatDisplay = ({ selectedMatch }: ChatDisplayProps) => {
     <div className="flex flex-col h-full">
       {matchedUser && (
         <div className="p-4 border-b border-green-200 text-center">
-          <span className="italic text-green-800 font-medium">
+          <span className="italic text-green-600 font-medium">
             Chat with {matchedUser.first_name}
           </span>
         </div>
