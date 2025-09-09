@@ -13,27 +13,27 @@ const Chat = ({ selectedMatch }: ChatProps) => {
   const authFetch = useAuthFetch();
   const { user } = useUser();
 
-  const fetchMessages = async () => {
-    if (!selectedMatch || !user?._id) return;
-
-    try {
-      setLoading(true);
-      const response = await authFetch(
-        `/messages/chat/${user._id}/${selectedMatch}?populate=true`
-      );
-      const data = await response.json();
-      console.log("API Response:", data);
-      setMessages(data);
-    } catch (error) {
-      console.error("Failed to fetch messages:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const fetchMessages = async () => {
+      if (!selectedMatch || !user?._id) return;
+  
+      try {
+        setLoading(true);
+        const response = await authFetch(
+          `/messages/chat/${user._id}/${selectedMatch}?populate=true`
+        );
+        const data = await response.json();
+        console.log("API Response:", data);
+        setMessages(data);
+      } catch (error) {
+        console.error("Failed to fetch messages:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
     fetchMessages();
-  }, [selectedMatch, user?._id]);
+  }, [selectedMatch, user?._id, authFetch]);  
 
   if (loading) {
     return (
