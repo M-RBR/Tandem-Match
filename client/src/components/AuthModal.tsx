@@ -40,7 +40,7 @@ function AuthModal({ onClose, mode: initialMode }: AuthModalProps) {
     if (!/[0-9]/.test(pwd)) {
       return "Password must contain at least one number.";
     }
-    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/.test(pwd)) {
+    if (!/[!@#$%^&*()_+\-={};':"\\|,.<>/?~]/.test(pwd)) {
       return "Password must contain at least one special character (e.g. !, ?, #).";
     }
     return null;
@@ -118,25 +118,6 @@ function AuthModal({ onClose, mode: initialMode }: AuthModalProps) {
       setIsLoading(false);
     }
   };
-
-  /*
-
-    console.log(
-      `${mode === "signup" ? "Signing up" : "Logging in"} with:`,
-      email,
-      password
-    );
-
-    if (mode === "signup") {
-      onClose();
-      navigate("/createprofile");
-    } else {
-      // add redirection logic for login later to profile cards page
-      onClose();
-    }
-  };
-
-  */
 
   const toggleMode = () => {
     setMode(mode === "signup" ? "login" : "signup");
