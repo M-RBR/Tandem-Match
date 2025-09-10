@@ -17,7 +17,7 @@ const Home = () => {
       <div className="flex flex-col justify-center items-center p-20 ">
         <button
           onClick={() => setShowModal(true)}
-          className="bg-green-500 hover:bg-green-600 text-white text-xl font-bold py-3 px-5 rounded-full"
+          className="bg-green-500 hover:bg-green-600 text-white text-lg font-bold py-2 px-4 rounded-full"
         >
           Sign up
         </button>

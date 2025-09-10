@@ -23,7 +23,8 @@ function App() {
         <Navbar />
         <main className="flex-grow">
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={user ? <Navigate to="/dashboard" /> : <Home />} />
+
             <Route
               path="/createprofile"
               element={user ? <CreateProfile /> : <Navigate to="/" />}
