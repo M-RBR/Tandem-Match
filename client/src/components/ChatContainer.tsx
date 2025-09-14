@@ -9,7 +9,7 @@ const ChatContainer = () => {
 
   return (
     <div className="h-full flex flex-col">
-      <div className="bg-green-50 p-4 rounded-t-lg">
+      <div className="bg-green-100 p-4 rounded-t-lg">
         <ChatHeader />
       </div>
 

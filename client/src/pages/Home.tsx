@@ -7,7 +7,7 @@ const Home = () => {
   return (
     <>
       <div className="flex flex-col text-center">
-        <h1 className="text-4xl text-green-700  font-bold p-4">
+        <h1 className="text-4xl text-green-700  font-bold p-14">
           Tandem Match<span className="text-lg align-super ml-1">™</span>
         </h1>
         <p className="text-xl text-green-600 font-bold italic p-4">
