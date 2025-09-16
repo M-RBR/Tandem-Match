@@ -1,4 +1,4 @@
-import { useUser } from "../contexts/UserContext";
+import { useUser } from "../contexts/useUser";
 import { useEffect, useState } from "react";
 import { useAuthFetch } from "../utils/authFetch";
 import { ChevronLeft, ChevronRight } from "lucide-react";

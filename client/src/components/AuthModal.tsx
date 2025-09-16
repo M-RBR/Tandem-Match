@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { X, Eye, EyeOff } from "lucide-react";
-import { useUser } from "../contexts/UserContext";
+import { useUser } from "../contexts/useUser";
 import { baseURL } from "../utils/baseURL";
 
 type AuthModalProps = {

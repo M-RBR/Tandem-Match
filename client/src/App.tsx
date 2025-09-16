@@ -8,7 +8,7 @@ import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
 import CreateProfile from "./pages/CreateProfile";
 import Dashboard from "./pages/Dashboard";
-import { useUser } from "./contexts/UserContext";
+import { useUser } from "./contexts/useUser";
 
 function App() {
   const { user, isLoading } = useUser();

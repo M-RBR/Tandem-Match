@@ -3,7 +3,7 @@ import type { ChangeEvent } from "react";
 import AsyncSelect from "react-select/async";
 import languageData from "../data/languages.json";
 import { useAuthFetch } from "../utils/authFetch";
-import { useUser } from "../contexts/UserContext";
+import { useUser } from "../contexts/useUser";
 import { useNavigate } from "react-router-dom";
 
 const LANGUAGE_LEVELS = [

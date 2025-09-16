@@ -2,7 +2,7 @@ import TMLogo from "../assets/TM_logo.jpg";
 import AuthModal from "./AuthModal";
 import { User } from "lucide-react";
 import { useState } from "react";
-import { useUser } from "../contexts/UserContext";
+import { useUser } from "../contexts/useUser";
 import { Link, useLocation } from "react-router-dom";
 
 const Navbar = () => {

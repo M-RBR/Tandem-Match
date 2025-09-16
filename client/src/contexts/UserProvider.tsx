@@ -1,16 +1,7 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import type { ReactNode } from "react";
 import type { User } from "../@types/user";
-
-type UserContextType = {
-  user: User | null;
-  setUser: (user: User | null, token?: string) => void;
-  token: string | null;
-  logout: () => void;
-  isLoading: boolean;
-};
-
-const UserContext = createContext<UserContextType | undefined>(undefined);
+import { UserContext } from "./UserContext";
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUserState] = useState<User | null>(null);
@@ -54,10 +45,4 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       {children}
     </UserContext.Provider>
   );
-};
-
-export const useUser = () => {
-  const context = useContext(UserContext);
-  if (!context) throw new Error("useUser must be used within UserProvider");
-  return context;
 };

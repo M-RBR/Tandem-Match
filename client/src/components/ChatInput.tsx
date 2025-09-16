@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuthFetch } from "../utils/authFetch";
-import { useUser } from "../contexts/UserContext";
+import { useUser } from "../contexts/useUser";
 
 interface ChatInputProps {
   selectedMatch: string | null;

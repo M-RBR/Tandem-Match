@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useUser } from "../contexts/UserContext";
+import { useUser } from "../contexts/useUser";
 import { baseURL } from "./baseURL";
 
 export const useAuthFetch = () => {
