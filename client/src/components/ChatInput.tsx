@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { KeyboardEvent } from "react";
 import { useAuthFetch } from "../utils/authFetch";
 import { useUser } from "../contexts/useUser";
 
@@ -37,11 +38,19 @@ const ChatInput = ({ selectedMatch, onMessageSent }: ChatInputProps) => {
     }
   };
 
+  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit();
+    }
+  };
+
   return (
     <div className="p-4 border-t border-green-200">
       <textarea
         value={textArea}
         onChange={(e) => setTextArea(e.target.value)}
+        onKeyDown={handleKeyDown}
         placeholder="Type your message here..."
         className="w-full p-3 border border-green-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent mb-2"
         rows={3}
