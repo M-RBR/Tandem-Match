@@ -32,14 +32,14 @@ const Navbar = () => {
           {user ? (
             <button
               onClick={logout}
-              className="bg-white hover:bg-gray-50 text-green-900 font-bold text-xl py-2 px-4 rounded"
+              className="bg-white hover:bg-gray-50 text-green-700 font-bold text-xl py-2 px-4 rounded"
             >
               Log out
             </button>
           ) : (
             <button
               onClick={() => setShowLoginModal(true)}
-              className="bg-white hover:bg-gray-50 text-green-900 font-bold text-xl py-2 px-4 rounded"
+              className="bg-white hover:bg-gray-50 text-green-700 font-bold text-xl py-2 px-4 rounded"
             >
               Log in
             </button>

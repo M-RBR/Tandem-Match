@@ -31,7 +31,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
 
   return (
     <div
-      className={`bg-white rounded-lg shadow-lg border border-gray-300 overflow-hidden h-96 w-94 
+      className={`bg-white rounded-lg shadow-lg border-2 border-green-300 overflow-hidden h-96 w-88 
         transition-all duration-300 ease-in-out
         ${swipeDirection === "up" ? "-translate-y-[150%] opacity-0" : ""}
         ${swipeDirection === "down" ? "translate-y-[150%] opacity-0" : ""}
@@ -65,7 +65,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
               </h3>
               <ul className="list-disc list-inside space-y-1 mt-1 ml-2">
               {user.spoken_languages?.map((lang, index) => (
-              <li key={index} className="text-xs text-green-600 break-words">
+              <li key={index} className="text-xs text-gray-600 break-words">
               {lang.name} ({lang.level})
               </li>
               ))}
@@ -78,7 +78,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
               </h3>
               <ul className="list-disc list-inside space-y-1 mt-1 ml-2">
               {user.learning_languages?.map((lang, index) => (
-              <li key={index} className="text-xs text-green-600 break-words">
+              <li key={index} className="text-xs text-gray-600 break-words">
               {lang.name} ({lang.level})
               </li>
               ))}
@@ -90,9 +90,9 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
 
       <div className="h-1/2 p-4 overflow-y-auto flex flex-col">
         <h3 className="text-sm font-semibold text-gray-600 mb-2 text-center">About me:</h3>
-        <p className="text-gray-700 text-sm flex-grow">{user.about}</p>
+        <p className="text-gray-700 text-sm flex-grow italic">{user.about}</p>
 
-        <div className="flex justify-center gap-8 mt-2">
+        <div className="flex justify-center gap-4 mt-2">
           <button
             className="text-yellow-500 hover:text-yellow-600 transition-colors"
             onClick={(e) => {
