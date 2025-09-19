@@ -1,6 +1,6 @@
 import TMLogo from "../assets/TM_logo.jpg";
 import AuthModal from "./AuthModal";
-import { User } from "lucide-react";
+import { User, LogOut } from "lucide-react";
 import { useState } from "react";
 import { useUser } from "../contexts/useUser";
 import { Link, useLocation } from "react-router-dom";
@@ -22,7 +22,7 @@ const Navbar = () => {
               className="p-2 rounded-full hover:bg-gray-100 transition-colors"
               title="Go to profile"
             >
-              <User className="text-green-700" size={26} />
+              <User className="text-green-700" size={28} />
             </Link>
           ) : (
             <img src={TMLogo} alt="Tandem Match Logo" className="h-10 w-auto" />
@@ -32,9 +32,10 @@ const Navbar = () => {
           {user ? (
             <button
               onClick={logout}
-              className="bg-white hover:bg-gray-50 text-green-700 font-bold text-xl py-2 px-4 rounded"
+              className="flex items-center gap-2 bg-white hover:bg-gray-50 text-green-700 font-bold text-xl py-2 px-4 rounded"
             >
               Log out
+              <LogOut className="text-green-700" size={26} />
             </button>
           ) : (
             <button
