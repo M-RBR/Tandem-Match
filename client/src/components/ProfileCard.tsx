@@ -6,6 +6,7 @@ interface ProfileCardProps {
   onMatch: () => void;
   onReject: () => void;
   swipeDirection?: "up" | "down";
+  viewOnly?: boolean;
 }
 
 const ProfileCard: React.FC<ProfileCardProps> = ({
@@ -13,6 +14,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   onMatch,
   onReject,
   swipeDirection,
+  viewOnly = false,
 }) => {
   const calculateAge = (birthDate: string) => {
     if (!birthDate) return "";
@@ -92,28 +94,30 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
         <h3 className="text-sm font-semibold text-gray-600 mb-2 text-center">About me:</h3>
         <p className="text-gray-700 text-sm flex-grow italic">{user.about}</p>
 
-        <div className="flex justify-center gap-4 mt-2">
-          <button
-            className="text-yellow-500 hover:text-yellow-600 transition-colors"
-            onClick={(e) => {
-              e.stopPropagation();
-              onMatch();
-            }}
-            aria-label="Like profile"
-          >
-            <Star size={24} fill="currentColor" />
-          </button>
-          <button
-            className="text-red-500 hover:text-red-800 transition-colors"
-            onClick={(e) => {
-              e.stopPropagation();
-              onReject();
-            }}
-            aria-label="Dislike profile"
-          >
-            <Ban size={22} />
-          </button>
-        </div>
+        {!viewOnly && (
+          <div className="flex justify-center gap-4 mt-2">
+            <button
+              className="text-yellow-500 hover:text-yellow-600 transition-colors"
+              onClick={(e) => {
+                e.stopPropagation();
+                onMatch();
+              }}
+              aria-label="Like profile"
+            >
+              <Star size={24} fill="currentColor" />
+            </button>
+            <button
+              className="text-red-500 hover:text-red-800 transition-colors"
+              onClick={(e) => {
+                e.stopPropagation();
+                onReject();
+              }}
+              aria-label="Dislike profile"
+            >
+              <Ban size={22} />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
