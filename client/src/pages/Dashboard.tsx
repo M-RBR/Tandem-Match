@@ -4,6 +4,7 @@ import { useUser } from "../contexts/useUser";
 import type { User } from "../@types/user";
 import ProfileCard from "../components/ProfileCard";
 import ChatContainer from "../components/ChatContainer";
+import MatchModal from "../components/MatchModal";
 
 const Dashboard: React.FC = () => {
   const [profiles, setProfiles] = useState<User[]>([]);
@@ -12,12 +13,13 @@ const Dashboard: React.FC = () => {
   const [swipingCards, setSwipingCards] = useState<
     { id: string; direction: "up" | "down" }[]
   >([]);
+  const [showMatchModal, setShowMatchModal] = useState(false);
+  const [matchedUserName, setMatchedUserName] = useState("");
   const authFetch = useAuthFetch();
   const { user, setUser } = useUser();
 
   useEffect(() => {
     const fetchProfiles = async () => {
-
       try {
         setLoading(true);
         const response = await authFetch("/users");
@@ -57,11 +59,9 @@ const Dashboard: React.FC = () => {
       const data = await response.json();
 
       if (data.isMatch) {
-        alert(
-          `It's a match with ${
-            profiles.find((p) => p._id === profileId)?.first_name
-          }!`
-        );
+        const matchedUser = profiles.find((p) => p._id === profileId);
+        setMatchedUserName(matchedUser?.first_name || "Unknown");
+        setShowMatchModal(true);
 
         setUser(
           {
@@ -159,6 +159,12 @@ const Dashboard: React.FC = () => {
           <ChatContainer />
         </div>
       </div>
+
+      <MatchModal
+        isOpen={showMatchModal}
+        onClose={() => setShowMatchModal(false)}
+        matchedUserName={matchedUserName}
+      />
     </div>
   );
 };
