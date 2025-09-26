@@ -1,20 +1,18 @@
 {
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
-    "incremental": true, // Added because of error "Option 'tsBuildInfoFile' cannot be specified without specifying option 'incremental' or option 'composite'"
-    "target": "ESNext", // Changed from "ES2023" to "ESNext"
+    "incremental": true,
+    "target": "ES2022",
     "lib": ["ES2023"],
     "module": "ESNext",
     "skipLibCheck": true,
 
-    /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",
     "noEmit": true,
 
-    /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
@@ -22,6 +20,3 @@
   },
   "include": ["vite.config.ts"]
 }
-
-// line removed from Linting section because of  error:  "erasableSyntaxOnly": true
-// line removed Linting section because of error: "noUncheckedSideEffectImports": true
