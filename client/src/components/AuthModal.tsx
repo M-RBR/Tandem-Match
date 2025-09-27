@@ -86,9 +86,7 @@ function AuthModal({ onClose, mode: initialMode }: AuthModalProps) {
         console.log("Registration successful:", data);
 
         setUser(data.user, data.token);
-
         onClose();
-        navigate("/createprofile", { state: { email } });
       } else {
         const response = await fetch(`${baseURL}/users/login`, {
           method: "POST",
