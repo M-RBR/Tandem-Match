@@ -1,4 +1,4 @@
-import TMLogo from "../assets/TM_logo.jpg";
+import TMLogo from "../assets/TM_logo3.png";
 import AuthModal from "./AuthModal";
 import { User, LogOut } from "lucide-react";
 import { useState } from "react";
