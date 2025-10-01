@@ -126,7 +126,7 @@ function AuthModal({ onClose, mode: initialMode }: AuthModalProps) {
     <div
       ref={modalRef}
       onClick={closeModal}
-      className="fixed inset-0 bg-black/20 backdrop-blur-sm flex justify-center items-center"
+      className="fixed inset-0 bg-black/20 backdrop-blur-sm flex justify-center items-center z-50"
     >
       <div className="w-full max-w-sm mt-10">
         <form
