@@ -149,7 +149,7 @@ const Dashboard: React.FC = () => {
               ))
             ) : (
               <div className="text-center text-gray-500">
-                No profiles available.
+                No profiles currently available, please come back later!
               </div>
             )}
           </div>

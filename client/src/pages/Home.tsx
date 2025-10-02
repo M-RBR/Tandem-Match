@@ -15,7 +15,7 @@ const Home = () => {
             Tandem Match<span className="text-lg align-super ml-1">™</span>
           </h1>
           <p className="text-2xl text-green-600 font-bold italic p-4">
-            Find your perfect language partner.
+            Find your language partner. Start talking.
           </p>
         </div>
         <div className="flex flex-col justify-center items-center p-20">

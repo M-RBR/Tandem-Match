@@ -1,4 +1,3 @@
-import TMLogo from "../assets/TM_logo3.png";
 import AuthModal from "./AuthModal";
 import { User, LogOut } from "lucide-react";
 import { useState } from "react";
@@ -16,7 +15,7 @@ const Navbar = () => {
     <>
       <nav className="flex items-center justify-between py-2 px-4">
         <div className="flex items-center">
-          {showUserIcon ? (
+          {showUserIcon && (
             <Link
               to="/createprofile"
               className="p-2 rounded-full hover:bg-gray-100 transition-colors"
@@ -24,8 +23,6 @@ const Navbar = () => {
             >
               <User className="text-green-700" size={28} />
             </Link>
-          ) : (
-            <img src={TMLogo} alt="Tandem Match Logo" className="h-10 w-auto" />
           )}
         </div>
         <div className="flex items-center gap-4">
