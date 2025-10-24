@@ -15,10 +15,38 @@ const Dashboard: React.FC = () => {
   >([]);
   const [showMatchModal, setShowMatchModal] = useState(false);
   const [matchedUserName, setMatchedUserName] = useState("");
+  const [applyGenderFilter, setApplyGenderFilter] = useState(false);
+  const [applyLanguageFilter, setApplyLanguageFilter] = useState(false);
   const authFetch = useAuthFetch();
   const { user, setUser } = useUser();
 
   useEffect(() => {
+    const matchesGenderFilter = (profile: User): boolean => {
+      if (!user?.gender_interest) return true;
+
+      if (user.gender_interest === "everyone") return true;
+
+      if (user.gender_interest === "men")
+        return profile.gender_identity === "man";
+      if (user.gender_interest === "women")
+        return profile.gender_identity === "woman";
+
+      return true;
+    };
+
+    const matchesLanguageFilter = (profile: User): boolean => {
+      if (!user?.learning_languages || user.learning_languages.length === 0)
+        return true;
+
+      return (
+        profile.spoken_languages?.some((spokenLang) =>
+          user.learning_languages.some(
+            (learningLang) => spokenLang.code === learningLang.code
+          )
+        ) || false
+      );
+    };
+
     const fetchProfiles = async () => {
       try {
         setLoading(true);
@@ -32,10 +60,18 @@ const Dashboard: React.FC = () => {
         const dislikedIds = currentUser.dislikedUsers || [];
         const seenIds = [...likedIds, ...dislikedIds];
 
-        const filteredProfiles = data.filter(
+        let filteredProfiles = data.filter(
           (profile: User) =>
             profile._id !== user?._id && !seenIds.includes(profile._id)
         );
+
+        if (applyGenderFilter) {
+          filteredProfiles = filteredProfiles.filter(matchesGenderFilter);
+        }
+
+        if (applyLanguageFilter) {
+          filteredProfiles = filteredProfiles.filter(matchesLanguageFilter);
+        }
 
         setProfiles(filteredProfiles);
       } catch (error) {
@@ -45,7 +81,7 @@ const Dashboard: React.FC = () => {
       }
     };
     fetchProfiles();
-  }, [user?._id, authFetch]);
+  }, [user, authFetch, applyGenderFilter, applyLanguageFilter]);
 
   const handleMatch = async (profileId: string) => {
     try {
@@ -118,9 +154,35 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
-      <h5 className="text-3xl italic font-bold text-center mt-5 mb-16 text-green-700">
+      <h5 className="text-3xl italic font-bold text-center mt-5 mb-8 text-green-700">
         FIND YOUR TANDEM MATCH
       </h5>
+
+      <div className="flex justify-center gap-6 mb-6">
+        <label className="flex items-center gap-2 cursor-pointer bg-white px-4 py-2 rounded-lg shadow-sm border border-green-300 hover:bg-green-50 transition-colors">
+          <input
+            type="checkbox"
+            checked={applyGenderFilter}
+            onChange={(e) => setApplyGenderFilter(e.target.checked)}
+            className="w-4 h-4 text-green-600 focus:ring-green-500 rounded cursor-pointer"
+          />
+          <span className="text-sm font-medium text-gray-700">
+            Apply Gender Filter
+          </span>
+        </label>
+
+        <label className="flex items-center gap-2 cursor-pointer bg-white px-4 py-2 rounded-lg shadow-sm border border-green-300 hover:bg-green-50 transition-colors">
+          <input
+            type="checkbox"
+            checked={applyLanguageFilter}
+            onChange={(e) => setApplyLanguageFilter(e.target.checked)}
+            className="w-4 h-4 text-green-600 focus:ring-green-500 rounded cursor-pointer"
+          />
+          <span className="text-sm font-medium text-gray-700">
+            Apply Language Filter
+          </span>
+        </label>
+      </div>
 
       <div className="flex flex-col md:flex-row gap-8 justify-center">
         <div className="w-full md:w-1/2 lg:w-1/3 flex justify-center">
