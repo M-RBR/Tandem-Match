@@ -175,13 +175,17 @@ const CreateProfile = () => {
 
     // Compare spoken languages
     const currentSpoken = spokenLanguages
-      .filter(l => l.language && l.level)
-      .map(l => ({ code: l.language?.value, name: l.language?.label, level: l.level }));
-    
+      .filter((l) => l.language && l.level)
+      .map((l) => ({
+        code: l.language?.value,
+        name: l.language?.label,
+        level: l.level,
+      }));
+
     const originalSpoken = originalUserData.spoken_languages || [];
-    
+
     if (currentSpoken.length !== originalSpoken.length) return true;
-    
+
     for (let i = 0; i < currentSpoken.length; i++) {
       const current = currentSpoken[i];
       const original = originalSpoken[i];
@@ -192,13 +196,17 @@ const CreateProfile = () => {
 
     // Compare learning languages
     const currentLearning = learningLanguages
-      .filter(l => l.language && l.level)
-      .map(l => ({ code: l.language?.value, name: l.language?.label, level: l.level }));
-    
+      .filter((l) => l.language && l.level)
+      .map((l) => ({
+        code: l.language?.value,
+        name: l.language?.label,
+        level: l.level,
+      }));
+
     const originalLearning = originalUserData.learning_languages || [];
-    
+
     if (currentLearning.length !== originalLearning.length) return true;
-    
+
     for (let i = 0; i < currentLearning.length; i++) {
       const current = currentLearning[i];
       const original = originalLearning[i];
@@ -214,20 +222,20 @@ const CreateProfile = () => {
     if (!originalUserData) return;
 
     // Get current form values from DOM
-    const form = document.querySelector('form') as HTMLFormElement;
+    const form = document.querySelector("form") as HTMLFormElement;
     if (!form) return;
 
     const formData = new FormData(form);
     const currentData = {
-      first_name: formData.get('first_name') as string,
-      dob_day: formData.get('dob_day') as string,
-      gender_identity: formData.get('gender_identity') as string,
-      gender_interest: formData.get('gender_interest') as string,
-      about: formData.get('about') as string,
+      first_name: formData.get("first_name") as string,
+      dob_day: formData.get("dob_day") as string,
+      gender_identity: formData.get("gender_identity") as string,
+      gender_interest: formData.get("gender_interest") as string,
+      about: formData.get("about") as string,
     };
 
     // Check for basic field changes
-    const hasBasicChanges = 
+    const hasBasicChanges =
       currentData.first_name !== originalUserData.first_name ||
       currentData.dob_day !== originalUserData.dob_day ||
       currentData.gender_identity !== originalUserData.gender_identity ||
@@ -249,7 +257,7 @@ const CreateProfile = () => {
   }, [spokenLanguages, learningLanguages, checkForChanges]);
 
   const handleChange = () => {
-    setTimeout(checkForChanges, 0); 
+    setTimeout(checkForChanges, 0);
   };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -269,7 +277,7 @@ const CreateProfile = () => {
 
       setImageFile(file);
       setErrorMessage(null);
-      setHasChanges(true); 
+      setHasChanges(true);
 
       const reader = new FileReader();
       reader.onload = () => {
@@ -362,7 +370,7 @@ const CreateProfile = () => {
         spoken_languages: data.spoken_languages,
         learning_languages: data.learning_languages,
       });
-      setHasChanges(false); 
+      setHasChanges(false);
       navigate("/dashboard");
     } catch (error) {
       console.error("Upload failed:", error);
@@ -373,7 +381,7 @@ const CreateProfile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white p-6">
+    <div className="min-h-screen bg-linear-to-b from-green-50 to-white p-6">
       <h3 className="text-4xl text-green-700 font-bold italic text-center mb-12">
         {isEditing ? "UPDATE PROFILE" : "CREATE PROFILE"}
       </h3>
