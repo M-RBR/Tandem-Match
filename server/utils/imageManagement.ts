@@ -22,3 +22,23 @@ export const imageUpload = async (
     streamifier.createReadStream(file.buffer).pipe(uploadStream);
   });
 };
+
+export const imageDelete = async (imageUrl: string): Promise<void> => {
+  try {
+    const urlParts = imageUrl.split("/");
+    const uploadIndex = urlParts.indexOf("upload");
+
+    if (uploadIndex === -1) {
+      throw new Error("Invalid Cloudinary URL");
+    }
+
+    const pathAfterVersion = urlParts.slice(uploadIndex + 2).join("/");
+    const publicId = pathAfterVersion.replace(/\.[^/.]+$/, "");
+
+    await cloudinary.uploader.destroy(publicId);
+    console.log(`Successfully deleted image: ${publicId}`);
+  } catch (error) {
+    console.error("Error deleting image from Cloudinary:", error);
+    throw error;
+  }
+};
