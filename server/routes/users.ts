@@ -1,5 +1,4 @@
 import express from "express";
-// import multer from "multer";
 import {
   getAllUsers,
   register,
@@ -10,11 +9,10 @@ import {
   addLike,
   getMatches,
   getUserById,
+  deleteUser,
 } from "../controllers/users";
 import { jwtAuth } from "../middlewares/jwt";
 import { upload, handleMulterResponse } from "../middlewares/multer";
-// import { imageUpload } from "../utils/imageManagement";
-// import { handleError } from "../utils/errorHandling";
 
 const router = express.Router();
 
@@ -42,8 +40,10 @@ router.post(
   updateUser
 );
 
-// routes for liking/disliking profiles
+// profile delete route
+router.delete("/delete/:_id", jwtAuth, deleteUser);
 
+// routes for liking/disliking profiles
 router.post("/add-like", jwtAuth, addLike);
 router.post("/add-dislike", jwtAuth, addDislike);
 

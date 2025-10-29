@@ -5,7 +5,8 @@ import UserModel from "../models/users";
 import { encryptPassword } from "../utils/hashPassword";
 import bcrypt from "bcrypt";
 import { generateToken } from "../utils/generateToken";
-import { imageUpload } from "../utils/imageManagement";
+import { imageUpload, imageDelete } from "../utils/imageManagement";
+import MessageModel from "../models/messages";
 
 export const register = async (req: Request, res: Response) => {
   try {
@@ -347,5 +348,68 @@ export const getUserById = async (req: Request, res: Response) => {
     res.json(user);
   } catch (error) {
     res.status(500).json({ message: "Error fetching user", error });
+  }
+};
+
+export const deleteUser = async (req: Request, res: Response) => {
+  try {
+    const { _id } = req.params;
+    const currentUserId = req.user?._id;
+
+    if (_id !== currentUserId?.toString()) {
+      return res
+        .status(403)
+        .json({ error: "Unauthorized to delete this account" });
+    }
+
+    const user = await UserModel.findById(_id);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    console.log(`Starting hard delete for user: ${_id}`);
+
+    if (user.image) {
+      try {
+        await imageDelete(user.image);
+        console.log(`Deleted Cloudinary image for user: ${_id}`);
+      } catch (error) {
+        console.error("Failed to delete image from Cloudinary:", error);
+      }
+    }
+
+    const deletedMessages = await MessageModel.deleteMany({
+      $or: [{ fromUserId: _id }, { toUserId: _id }],
+    });
+    console.log(
+      `Deleted ${deletedMessages.deletedCount} messages for user: ${_id}`
+    );
+
+    const updateResult = await UserModel.updateMany(
+      {
+        $or: [{ matches: _id }, { likedUsers: _id }, { dislikedUsers: _id }],
+      },
+      {
+        $pull: {
+          matches: _id,
+          likedUsers: _id,
+          dislikedUsers: _id,
+        },
+      }
+    );
+    console.log(
+      `Updated ${updateResult.modifiedCount} users to remove references to deleted user: ${_id}`
+    );
+
+    await UserModel.findByIdAndDelete(_id);
+    console.log(`Successfully hard-deleted user document: ${_id}`);
+
+    res.status(200).json({
+      success: true,
+      message: "Profile permanently deleted",
+    });
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    handleError(error, res);
   }
 };
