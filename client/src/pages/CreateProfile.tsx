@@ -5,6 +5,7 @@ import languageData from "../data/languages.json";
 import { useAuthFetch } from "../utils/authFetch";
 import { useUser } from "../contexts/useUser";
 import { useNavigate } from "react-router-dom";
+import DeleteProfileModal from "../components/DeleteProfileModal";
 
 const LANGUAGE_LEVELS = [
   "Beginner",
@@ -105,6 +106,8 @@ const CreateProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [hasChanges, setHasChanges] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [originalUserData, setOriginalUserData] = useState<{
     first_name?: string;
     dob_day?: string;
@@ -117,7 +120,7 @@ const CreateProfile = () => {
   } | null>(null);
 
   const authFetch = useAuthFetch();
-  const { user, setUser } = useUser();
+  const { user, setUser, logout } = useUser();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -380,6 +383,30 @@ const CreateProfile = () => {
     }
   };
 
+  const handleDeleteProfile = async () => {
+    setIsDeleting(true);
+
+    try {
+      const response = await authFetch(`/users/delete/${user?._id}`, {
+        method: "DELETE",
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to delete profile");
+      }
+
+      logout();
+      navigate("/");
+    } catch (error) {
+      console.error("Delete failed:", error);
+      setErrorMessage("Profile deletion failed. Please try again.");
+      setIsDeleting(false);
+      setShowDeleteModal(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-linear-to-b from-green-50 to-white p-6">
       <h3 className="text-4xl text-green-700 font-bold italic text-center mb-12">
@@ -616,25 +643,34 @@ const CreateProfile = () => {
 
         <div className="text-center mt-8">
           {isEditing ? (
-            <div className="space-x-4">
-              {hasChanges && (
+            <div className="flex flex-col items-center gap-4">
+              <div className="flex justify-center items-center gap-4">
+                {hasChanges && (
+                  <button
+                    type="submit"
+                    disabled={isUploading}
+                    className={`bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-200 ${
+                      isUploading ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
+                  >
+                    {isUploading ? "Saving..." : "Save changes"}
+                  </button>
+                )}
                 <button
-                  type="submit"
-                  disabled={isUploading}
-                  className={`bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-200 ${
-                    isUploading ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
+                  type="button"
+                  onClick={() => navigate("/dashboard")}
+                  className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-200"
                 >
-                  {isUploading ? "Saving..." : "Save changes"}
+                  Back to dashboard
                 </button>
-              )}
-              <button
-                type="button"
-                onClick={() => navigate("/dashboard")}
-                className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-200"
-              >
-                Back to dashboard
-              </button>
+                <button
+                  type="button"
+                  onClick={() => setShowDeleteModal(true)}
+                  className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-200"
+                >
+                  Delete profile
+                </button>
+              </div>
             </div>
           ) : (
             <button
@@ -653,6 +689,14 @@ const CreateProfile = () => {
             </p>
           )}
         </div>
+
+        {showDeleteModal && (
+          <DeleteProfileModal
+            onClose={() => setShowDeleteModal(false)}
+            onConfirm={handleDeleteProfile}
+            isDeleting={isDeleting}
+          />
+        )}
       </form>
     </div>
   );

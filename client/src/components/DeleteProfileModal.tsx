@@ -75,4 +75,3 @@ const DeleteProfileModal = ({
 };
 
 export default DeleteProfileModal;
-
