@@ -23,16 +23,6 @@ app.use((0, cors_1.default)());
 // app.use("/", express.static("documentation")); // why is this here?
 app.use("/images", express_1.default.static("uploads")); // change this to not have local upload?
 app.use(jwt_1.testingMiddleware);
-/*
-// Added, revise later; use baseURL?
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  })
-);
-*/
 app.post("/testing", (req, res) => {
     res.send("Hello World!");
 });

@@ -26,17 +26,6 @@ configureCloudinary();
 app.use("/images", express.static("uploads")); // change this to not have local upload?
 app.use(testingMiddleware);
 
-/*
-// Added, revise later; use baseURL?
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  })
-);
-*/
-
 app.post("/testing", (req, res) => {
   res.send("Hello World!");
 });
