@@ -4,6 +4,9 @@
 
 Tandem Match is a language exchange platform that connects users with language partners for mutual learning. Users can discover, match, and chat with people who speak the languages they want to learn and want to learn the languages they speak.
 
+**Live deployment:** [tandem-match-4cyw.vercel.app/
+](https://tandem-match-4cyw.vercel.app/)
+
 ## Features
 
 ### Core Functionality
